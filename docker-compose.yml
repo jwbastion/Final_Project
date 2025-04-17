@@ -1,8 +1,36 @@
-version: '3'
+version: '3.8'
+
 services:
-  web:
-    build: .
+  db:
+    image: postgres:14
+    container_name: my_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
     ports:
-      - "5000:5000"
+      - "5432:5432"
     volumes:
-      - .:/app
+      - pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+  # pgAdmin 사용하고 싶다면 이 블록을 추가 (Adminer 대신)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@zipup.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+    ports:
+      - "5050:80"  # localhost:5050 으로 접속
+
+volumes:
+  pgdata:
