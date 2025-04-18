@@ -3,3 +3,9 @@ sqlalchemy # SQLAlchemy for ORM
 psycopg2-binary # PostgreSQL driver
 python-dotenv
 flask
+flask
+pandas
+numpy
+faiss-cpu
+sentence-transformers
+scipy
