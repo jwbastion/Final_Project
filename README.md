@@ -4,25 +4,12 @@ Docker 참고자료:https://wikidocs.net/225586
 <<<<<<< HEAD
 PostgreSQL 참고자료: https://wikidocs.net/184222
 
-Table명 
 
-## play_table
-- id INTEGER PRIMARY KEY,
-- road_address TEXT,
-- business_name TEXT,
-- longitude REAL,
-- latitude REAL,
-- category TEXT
+# 데이터 베이스
+docker 실행 명령어(관리자): docker compose up --build
 
-### life_table
-- id INTEGER PRIMARY KEY,
-- road_address TEXT,
-- business_name TEXT,
-- longitude REAL,
-- latitude REAL,
-- category TEXT
+# 1. 버전 업로드
+pip freeze > requirements.txt
 
-### health_table
-=======
-PostgreSQL 참고자료: https://wikidocs.net/184222
->>>>>>> feature/rag
+# 2. 버전 통합
+pip install -r requirements.txt
