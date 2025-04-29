@@ -1,8 +1,13 @@
 import openrouteservice
 import requests
+import os 
+from dotenv import load_dotenv
 
-ORS_API_KEY = "5b3ce3597851110001cf6248e3dca43afa234a92ac01e2f22633b108"
-GOOGLE_API_KEY = "AIzaSyAaqujqDSkYf79wqytvlokAAJqE1UwFdFw"
+load_dotenv()  # .env 파일 불러오기
+
+ORS_API_KEY = os.getenv("ORS_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+ors_client = openrouteservice.Client(key=ORS_API_KEY)
 ors_client = openrouteservice.Client(key=ORS_API_KEY)
 
 def calculate_walk_time(origin_lat, origin_lng, dest_lat, dest_lng):
