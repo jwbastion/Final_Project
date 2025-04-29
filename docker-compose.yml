@@ -1,8 +1,44 @@
-version: '3'
+version: "3.8"
+
 services:
-  web:
-    build: .
+  db:
+    image: postgres:15
+    container_name: zipup_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: teammate
+      POSTGRES_PASSWORD: teampass123
+      POSTGRES_DB: zipup_db
     ports:
-      - "5000:5000"
+      - "5432:5432"
     volumes:
-      - .:/app
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: zipup_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=teammate
+      - POSTGRES_PASSWORD=teampass123
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=zipup_db
+    volumes:
+      - ./data:/app/data
+    command: ["python", "database.py"]
+
+volumes:
+  pgdata:
