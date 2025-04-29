@@ -1,5 +1,5 @@
 import React from 'react';
-import './MainPage.css'; // 스타일 파일 따로
+import './MainPage.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function MainPage() {
@@ -27,8 +27,8 @@ export default function MainPage() {
         {/* 사이드 메뉴 */}
         <aside className="sidebar">
           <ul>
-            <li onClick={() => navigate('/survey')}>설문</li>
-            <li onClick={() => navigate('/chatbot')}>챗봇</li>
+            <li style={{ cursor: 'pointer' }} onClick={() => navigate('/survey')}>설문</li>
+            <li style={{ cursor: 'pointer' }} onClick={() => navigate('/chatbot')}>챗봇</li>
           </ul>
         </aside>
 
