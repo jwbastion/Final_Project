@@ -26,3 +26,6 @@ Table명
 =======
 PostgreSQL 참고자료: https://wikidocs.net/184222
 >>>>>>> feature/rag
+
+
+docker 실행 명령어(관리자): docker compose up --build
