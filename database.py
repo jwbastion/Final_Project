@@ -77,7 +77,6 @@ for file_path in csv_files:
         else:
             print(f"⚠️ 매핑되지 않은 카테고리: {category}")
 
-# 7. users 테이블 생성
 with engine.connect() as conn:
     create_users_table_sql = """
     CREATE TABLE IF NOT EXISTS users (
@@ -86,6 +85,12 @@ with engine.connect() as conn:
         password TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+
+    -- 테이블 권한 부여
+    GRANT ALL ON TABLE users TO teammate;
+
+    -- 시퀀스 권한 부여
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO teammate;
     """
     conn.execute(text(create_users_table_sql))
-    print("users 테이블 생성 완료!")
+    print("✅ users 테이블 생성 및 권한 부여 완료!")
