@@ -12,24 +12,11 @@ export default function Survey() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('설문 결과:', { monthlyRent, deposit, maintenanceFee });
-    navigate('/chatbot');
+    navigate('/main/chatbot');
   };
 
   return (
     <div className="survey-page">
-      {/* 헤더 */}
-      <header className="header">
-        <div
-          className="logo"
-          style={{ cursor: 'pointer' }}
-          onClick={() => navigate('/')}
-        >
-          🏡 살아보고서
-        </div>
-        <div className="auth-buttons">
-          <button onClick={() => navigate('/login')}>로그아웃</button>
-        </div>
-      </header>
       {/* 설문 */}
       <div className="survey-container">
         <h2>나의 예산을 선택해주세요</h2>
@@ -38,7 +25,7 @@ export default function Survey() {
           <div className="survey-question">
             <span>1️⃣ 월세는 어느 정도까지 괜찮으신가요?</span>
             <div className="survey-options">
-              {['30만원 이하', '30~50만원', '50~70만원', '70만원 이상'].map((option) => (
+              {['30만원 이하', '30~50만원', '50~70만원', '70~90만원', '90~100만원', '100만원 이상'].map((option) => (
                 <button
                   key={option}
                   type="button"
@@ -54,7 +41,7 @@ export default function Survey() {
           <div className="survey-question">
             <span>2️⃣ 보증금은 어느 정도까지 괜찮으신가요?</span>
             <div className="survey-options">
-              {['500만원 이하', '500~1,000만원', '1,000~2,000만원', '2,000만원 이상'].map((option) => (
+              {['500만원 이하', '500~1,000만원', '1,000~2,000만원', '2,000만원 이상', '상관없음'].map((option) => (
                 <button
                   key={option}
                   type="button"
@@ -70,7 +57,7 @@ export default function Survey() {
           <div className="survey-question">
             <span>3️⃣ 관리비는 어느 정도까지 괜찮으신가요?</span>
             <div className="survey-options">
-              {['5만원 이하', '5~10만원', '10만원 이상', '관리비 포함 매물만 보고 싶어요'].map((option) => (
+              {['5만원 이하', '5~10만원', '10만원 이상', '상관없음'].map((option) => (
                 <button
                   key={option}
                   type="button"

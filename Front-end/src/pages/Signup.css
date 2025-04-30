@@ -38,7 +38,7 @@
   .signup-form button {
     margin-top: 20px;
     padding: 10px;
-    background: #28a745;
+    background: #4c5eaf;
     color: white;
     border: none;
     font-size: 16px;
@@ -46,5 +46,5 @@
     cursor: pointer;
   }
   .signup-form button:hover {
-    background: #218838;
+    background: #2a3461;
   }  

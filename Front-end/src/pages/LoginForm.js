@@ -4,13 +4,13 @@ import { useNavigate, Link } from 'react-router-dom';
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const [userId, setId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('로그인 정보:', { userId, password });
-    navigate('/survey');
+    console.log('로그인 정보:', { email, password });
+    navigate('/main/survey');
   };
 
   return (
@@ -30,11 +30,11 @@ export default function LoginForm() {
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>로그인</h2>
         <label>
-          아이디
+          이메일
           <input
-            type="text"
-            value={userId}
-            onChange={(e) => setId(e.target.value)}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </label>
@@ -45,7 +45,6 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="••••••••"
           />
         </label>
         <button type="submit">로그인</button>

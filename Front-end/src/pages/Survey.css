@@ -33,7 +33,7 @@
 }
 
 .survey-option.selected {
-  background-color: #4caf50;
+  background-color: #2d8fff;
   color: white;
   font-weight: bold;
 }
@@ -41,7 +41,7 @@
 .survey-submit {
   padding: 12px;
   font-size: 18px;
-  background-color: #007bff;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 8px;

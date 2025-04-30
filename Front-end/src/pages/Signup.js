@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import './Signup.css'; // 아래 스타일 참고
+import './Signup.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    username: '',
+    email: '',
     password: '',
-    confirmPassword: '',
-    nickname: '',
-    gender: '',
-    birth: ''
+    confirmPassword: ''
   });
 
   const handleChange = (e) => {
@@ -48,8 +45,8 @@ export default function Signup() {
         <form className="signup-form" onSubmit={handleSubmit}>
           <h2>회원가입</h2>
           <label>
-            아이디
-            <input name="username" value={form.username} onChange={handleChange} required />
+            이메일
+            <input name="email" value={form.email} onChange={handleChange} required />
           </label>
           <label>
             비밀번호
@@ -58,22 +55,6 @@ export default function Signup() {
           <label>
             비밀번호 확인
             <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} required />
-          </label>
-          <label>
-            닉네임
-            <input name="nickname" value={form.nickname} onChange={handleChange} required />
-          </label>
-          <label>
-            성별
-            <select name="gender" value={form.gender} onChange={handleChange} required>
-              <option value="">선택</option>
-              <option value="male">남성</option>
-              <option value="female">여성</option>
-            </select>
-          </label>
-          <label>
-            생년월일
-            <input name="birth" type="date" value={form.birth} onChange={handleChange} required />
           </label>
           <button type="submit">회원가입</button>
         </form>

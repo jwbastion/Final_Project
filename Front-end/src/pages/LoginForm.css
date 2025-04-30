@@ -38,7 +38,7 @@
 .login-form button {
   margin-top: 20px;
   padding: 10px;
-  background: #007bff;
+  background: #28a745;
   color: white;
   border: none;
   font-size: 16px;
@@ -46,15 +46,15 @@
   cursor: pointer;
 }
 .login-form button:hover {
-  background: #0056b3;
+  background: #218838;
 }
 
-/* 회원가입 버튼 추가 */
+/* 회원가입 버튼 */
 .signup-button {
   margin-top: 10px;
   display: block;
   padding: 10px;
-  background: #28a745;
+  background: #4c5eaf;
   color: white;
   text-align: center;
   border-radius: 6px;
@@ -62,5 +62,5 @@
   font-size: 14px;
 }
 .signup-button:hover {
-  background: #218838;
+  background: #2a3461;
 }
