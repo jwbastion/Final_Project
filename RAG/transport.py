@@ -2,6 +2,7 @@ import openrouteservice
 import requests
 import os 
 from dotenv import load_dotenv
+from geo import haversine
 
 load_dotenv()  # .env 파일 불러오기
 
@@ -16,7 +17,9 @@ def calculate_walk_time(origin_lat, origin_lng, dest_lat, dest_lng):
         result = ors_client.directions(coordinates=coords, profile='foot-walking', format='json')
         return result['routes'][0]['summary']['duration'] / 60
     except:
-        return None
+        # 실패하면 직선거리 기반으로 추정 시간 반환
+        dist = haversine(origin_lat, origin_lng, dest_lat, dest_lng)
+        return round(dist / 67, 1)
 
 def calculate_transit_time(origin_lat, origin_lng, dest_lat, dest_lng):
     url = "https://maps.googleapis.com/maps/api/directions/json"
