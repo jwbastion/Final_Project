@@ -1,22 +1,23 @@
+import os
 import pandas as pd
 from sqlalchemy import create_engine, text
 from urllib.parse import quote_plus
 from dotenv import load_dotenv
-import os
 
-# Load .env
+# .env 파일 불러오기
 load_dotenv()
 
+# DB 연결 설정
 user = os.getenv("POSTGRES_USER")
 password = quote_plus(os.getenv("POSTGRES_PASSWORD"))
 host = os.getenv("POSTGRES_HOST")
 port = os.getenv("POSTGRES_PORT")
 db = os.getenv("POSTGRES_DB")
 
-# SQLAlchemy 연결
+# 3. SQLAlchemy 엔진 생성
 engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}")
 
-# 한글 카테고리 → 영어 테이블명 매핑
+# 4. 한글 카테고리 → 영어 테이블명 매핑
 category_mapping = {
     '대형마트': 'life_mart',
     '백화점': 'life_department_store',
@@ -36,8 +37,8 @@ category_mapping = {
     '약국': 'health_pharmacy'
 }
 
-# 업로드할 파일들
-files = [
+# 5. CSV 파일 목록
+csv_files = [
     "data/main/life.csv",
     "data/main/play.csv",
     "data/main/safety.csv",
@@ -45,7 +46,8 @@ files = [
     "data/main/health_care.csv"
 ]
 
-for file_path in files:
+# 6. 카테고리별 테이블 생성 및 데이터 삽입
+for file_path in csv_files:
     df = pd.read_csv(file_path, encoding="utf-8-sig")
 
     if 'category' not in df.columns:
@@ -55,7 +57,6 @@ for file_path in files:
         table_name = category_mapping.get(category)
 
         if table_name:
-            # 테이블 생성 쿼리
             with engine.connect() as conn:
                 create_sql = f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
@@ -74,4 +75,22 @@ for file_path in files:
             group_df.to_sql(table_name, engine, if_exists="append", index=False)
             print(f"✅ {table_name} 테이블에 {len(group_df)}개 행 삽입 완료!")
         else:
-            print(f"⚠️ 카테고리 매핑 없음: {category}")
+            print(f"⚠️ 매핑되지 않은 카테고리: {category}")
+
+with engine.connect() as conn:
+    create_users_table_sql = """
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- 테이블 권한 부여
+    GRANT ALL ON TABLE users TO teammate;
+
+    -- 시퀀스 권한 부여
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO teammate;
+    """
+    conn.execute(text(create_users_table_sql))
+    print("✅ users 테이블 생성 및 권한 부여 완료!")
