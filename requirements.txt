@@ -1,4 +1,0 @@
-requests
-openrouteservice
-psycopg2
-python-dotenv

@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: teammate
       POSTGRES_PASSWORD: teampass123
-      POSTGRES_DB: zipup_db
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
@@ -27,17 +27,19 @@ services:
       - db
 
   app:
-    build: .
+    build:
+      context: ./postgres
+    container_name: zipup_app
     depends_on:
       - db
     environment:
       - POSTGRES_USER=teammate
       - POSTGRES_PASSWORD=teampass123
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=172.16.220.246
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=zipup_db
+      - POSTGRES_DB=postgres
     volumes:
-      - ./data:/app/data
+      - ./postgres:/app
     command: ["python", "database.py"]
 
 volumes:
