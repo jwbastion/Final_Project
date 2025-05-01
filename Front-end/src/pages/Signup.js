@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import './Signup.css';
 import { useNavigate } from 'react-router-dom';
+import sideImage from '../assets/images/Jfw2.gif';
+import '../assets/styles/login.css'; // 로그인 화면 스타일 재사용
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -29,35 +30,56 @@ export default function Signup() {
   };
 
   return (
-    <div className="signup-page">
-      {/* 헤더 */}
-      <header className="header">
+    <div className="login-bg">
+      <div className="login-card">
         <div
-          className="logo"
-          style={{ cursor: 'pointer' }}
-          onClick={() => navigate('/')}
-        >
-          🏡 살아보고서
+          className="login-side-image"
+          style={{ backgroundImage: `url(${sideImage})` }}
+        />
+        <div className="login-form-container">
+          <div className="login-title">LIVEPORT</div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="signup-email" className="form-label">
+                이메일
+                <input
+                  name="email"
+                  className="form-control"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="signup-password" className="form-label">
+                비밀번호
+                <input
+                  name="password"
+                  type="password"
+                  className="form-control"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="signup-password-confirm" className="form-label">
+                비밀번호 확인
+                <input
+                  name="confirmPassword"
+                  type="password"
+                  className="form-control"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+                </label>
+            </div>
+            <button type="submit" className="btn btn-primary w-100">회원가입</button>
+          </form>
         </div>
-      </header>
-      {/* 회원가입 폼 */}
-      <div className="signup-container">
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <h2>회원가입</h2>
-          <label>
-            이메일
-            <input name="email" value={form.email} onChange={handleChange} required />
-          </label>
-          <label>
-            비밀번호
-            <input name="password" type="password" value={form.password} onChange={handleChange} required />
-          </label>
-          <label>
-            비밀번호 확인
-            <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} required />
-          </label>
-          <button type="submit">회원가입</button>
-        </form>
       </div>
     </div>
   );

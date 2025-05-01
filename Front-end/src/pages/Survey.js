@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Survey.css';
+import '../assets/styles/Survey.css';
 
 export default function Survey() {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export default function Survey() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // 결과 전송 및 이동
-    navigate('/main/chatbot');
+    navigate('/main');
   };
 
   return (

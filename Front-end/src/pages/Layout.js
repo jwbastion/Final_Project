@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import './MainPage.css';
+import '../assets/styles/MainPage.css';
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function Layout() {
       {/* 헤더 */}
       <header className="header">
         <div className="logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/main')}>
-          🏡 살아보고서
+          🏡 LIVEPORT
         </div>
         <div className="auth-buttons">
           <button onClick={() => navigate('/')}>로그아웃</button>

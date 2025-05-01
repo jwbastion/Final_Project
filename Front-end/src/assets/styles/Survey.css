@@ -1,0 +1,76 @@
+.survey-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #fff;
+  text-align: center;
+}
+
+.survey-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.survey-question {
+  text-align: left;
+}
+
+.survey-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* 관리비 버튼 한 줄(3개) */
+.survey-options.row-3 .survey-option {
+  flex: 1 1 33.33%;
+  min-width: 0;
+}
+
+/* '상관없음' 버튼도 3개 중 1개 크기로 맞추기 */
+.survey-options.row-1 {
+  justify-content: flex-start;
+  width: 100%;
+}
+.survey-options.row-1 .survey-option {
+  flex: 1 1 33.33%;
+  min-width: 0;
+  max-width: none;
+}
+
+.survey-options.row-2 .survey-option {
+  flex: 1 1 50%;
+  min-width: 0;
+}
+
+.survey-option {
+  padding: 10px 20px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.survey-option.selected {
+  background-color: #2d8fff;
+  color: white;
+  font-weight: bold;
+}
+
+.survey-submit {
+  padding: 12px;
+  font-size: 18px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.survey-submit:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
