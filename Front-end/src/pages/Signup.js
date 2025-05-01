@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import sideImage from '../assets/images/Jfw2.gif';
+import sideImage from '../assets/images/ex4.gif';
 import '../assets/styles/login.css'; // 로그인 화면 스타일 재사용
 
 export default function Signup() {

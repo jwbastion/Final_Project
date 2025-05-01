@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import sideImage from '../assets/images/Jfw2.gif'; // 이미지 경로
+import sideImage from '../assets/images/ex4.gif'; // 이미지 경로
 import '../assets/styles/login.css';
 
 export default function LoginForm() {
