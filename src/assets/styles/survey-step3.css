@@ -1,0 +1,93 @@
+/* ───────────────────────────────── */
+/* SurveyStep3 전용 스타일          */
+/* ───────────────────────────────── */
+
+.step3-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Pretendard', sans-serif;
+    color: #333;
+    padding: 32px 16px;
+    box-sizing: border-box;
+  }
+  
+  .survey3-header h2 {
+    font-size: 1.8rem;
+    color: #1976d2;
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: 700;
+  }
+  
+  .survey-question {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 24px;
+  }
+  
+  .question-label {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  
+  .survey-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .survey-option {
+    flex: 1 1 calc(33.333% - 12px);
+    min-width: 120px;
+    padding: 12px 8px;
+    font-size: 0.95rem;
+    text-align: center;
+    border: 2px solid #1976d2;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #1976d2;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .survey-option:hover {
+    background-color: #e3f2fd;
+  }
+  
+  .survey-option.selected {
+    background-color: #1976d2;
+    color: #fff;
+    border-color: #115293;
+  }
+  
+  .survey-finish-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+  
+  .survey-finish-button {
+    width: 220px;
+    padding: 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #1976d2;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .survey-finish-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .survey-finish-button:not(:disabled):hover {
+    background-color: #115293;
+  }

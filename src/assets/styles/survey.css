@@ -12,10 +12,11 @@
 
 /* 중앙 컨테이너: 고정 폭, 자동 margin 으로 가운데 정렬 */
 .survey-container {
-  width: 1200px;         /* 고정 폭 */
-  max-width: 1200px;     /* 최대 폭도 동일 */
-  min-width: 1200px;     /* 최소 폭도 동일 */
-  min-height: 650px;
+  width: 1250px;         /* 고정 폭 */
+  max-width: 1250px;     /* 최대 폭도 동일 */
+  min-width: 1250px;     /* 최소 폭도 동일 */
+  min-height: 800px;
+  height: 800px;
   background: #fff;
   border-radius: 12px;
   padding: 24px;
@@ -47,107 +48,77 @@
   flex: 1; height: 4px;
   background: #ccc;
 }
+.divider.active { background: #1976d2; }
 
 /* step1 layout */
-.step1-container p {font-size: 1.1rem;  margin-bottom: 12px;}
-.step1-container { display: flex; flex-direction: column; }
-.search-bar { 
+.step1-container p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.step1-container { 
   display: flex; 
-  justify-content: left;
-  align-items: left;
-  margin-bottom: 16px;}
+  flex-direction: column; 
+  align-items: center;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+  padding: 20px 0;
+}
+
+.search-bar { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 700px;
+}
+.search-bar .btn:hover {
+  background-color: #145a9e;
+}
   
 .step1-container .form-control { height: 48px; width: 600px; flex: none;}
-.btn { height: 48px; }
+.btn { 
+  height: 48px;
+  font-size: 1rem;
+  border-radius: 0 8px 8px 0;
+  border: 1px solid #1976d2;
+  background-color: #1976d2;
+  color: #fff;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
 
 .step1-container .survey-map-wrapper {
-  width: 1000px;            /* 고정 폭 */
-  margin: 0 auto;          /* 수평 중앙 */
-}
-
-.step2-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 32px 0;
-}
-
-.step2-container h3 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #1976d2;
+  width: 100%;
+  max-width: 700px;
+  height: 420px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(25,118,210,0.2);
   margin-bottom: 24px;
 }
 
-.step2-container .list-group-item {
-  font-size: 1rem;
+/* Leaflet 컨테이너 둥글게 */
+.leaflet-container {
+  border-radius: 12px !important;
 }
 
-.step2-container .btn {
-  min-width: 200px;
-  margin-top: 12px;
-}
-
-/* 2열 Grid layout */
-.info-grid {
-  display: flex;            /* flex 컨테이너 */
-  flex-wrap: nowrap;        /* 줄 바꿈 금지 */
-  justify-content: space-between;
-  gap: 16px;                /* 카드 간 간격 */
-  width: 100%;
-}
-
-.info-card {
-  flex: 1;                  /* 남는 공간을 균등 분할 */
-  min-width: 240px;         /* 카드 최소 너비 */
-  background: #fff;
-  background-color: aquamarine;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 레이블 스타일 */
-.info-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-/* 값 스타일 */
-.info-value {
-  font-size: 1.1rem;
-  color: #222;
-  word-break: break-all;
-}
-
-/* 다음 버튼 스타일 */
-.step2-btn-group .btn {
+/* 선택 버튼 */
+.text-center .btn-primary {
   width: 220px;
-  padding: 12px 0;
+  height: 48px;
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 8px;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 12px rgba(25,118,210,0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
-.next-btn:hover {
+
+.text-center .btn-primary:hover {
   background-color: #115293;
-  box-shadow: 0 6px 16px rgba(17,82,147,0.4);
-}
-
-.step2-btn-group {
-  display: flex;
-  justify-content: center;
-  gap: 50px;                  /* 버튼 간격 */
-  margin-top: auto;           /* 콘텐츠 끝에서 버튼 그룹을 밀어내어 하단 고정 */
-  margin-bottom: 16px;        /* 컨테이너 하단 여백 */
-}
-
-.step2-btn-group .btn {
-  width: 180px;               /* 버튼 너비 통일 */
-  padding: 10px 0;
-  font-size: 1rem;
+  box-shadow: 0 6px 16px rgba(17,82,147,0.5);
 }

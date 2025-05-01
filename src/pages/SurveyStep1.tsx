@@ -102,7 +102,7 @@ const SurveyStep1: React.FC<Props> = ({ onNext }) => {
       <div className="survey-map-wrapper">
       <MapContainer
         center={[37.5665,126.978] as [number, number]}
-        zoom={13}
+        zoom={14}
         style={{ height: 400, width: '100%' }}
       >
         {position && <Recenter center={position} />}

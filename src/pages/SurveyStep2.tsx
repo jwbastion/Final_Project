@@ -1,6 +1,6 @@
 // src/pages/SurveyStep2.tsx
 import React from 'react';
-import '../assets/styles/survey.css';
+import '../assets/styles/survey-step2.css';
 
 interface Props {
   data: {
@@ -20,7 +20,7 @@ const SurveyStep2: React.FC<Props> = ({ data, onNext, onBack }) => {
       <br></br>
       <div className="info-grid">
         <div className="info-card">
-          <div className="info-label">검색어</div>
+          <div className="info-label">검색 장소</div>
           <div className="info-value">{data.query || '-'}</div>
         </div>
         <div className="info-card">
