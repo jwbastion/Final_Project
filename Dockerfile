@@ -8,4 +8,4 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
-CMD ["python", "database.py"]
+CMD ["python", "postgres/database.py"]

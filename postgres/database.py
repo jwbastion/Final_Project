@@ -103,11 +103,11 @@ category_mapping = {
 }
 
 csv_files = [
-    "data/main/life.csv",
-    "data/main/play.csv",
-    "data/main/safety.csv",
-    "data/main/traffic.csv",
-    "data/main/health_care.csv"
+    "data/life.csv",
+    "data/play.csv",
+    "data/safety.csv",
+    "data/traffic.csv",
+    "data/health_care.csv"
 ]
 
 for file_path in csv_files:
