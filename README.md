@@ -17,5 +17,5 @@ docker 실행 명령어(관리자): docker compose up --build
 # 버전 관리(관리자자)
 pip freeze > requirements.txt
 
-# 1. 이거 꼭 해라 Docker server start
+# 1. 이거 꼭 해라 Docker server start(관리자)
 docker compose up --build

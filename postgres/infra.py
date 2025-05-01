@@ -85,10 +85,21 @@ with engine.connect() as conn:
         password TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+<<<<<<< HEAD:postgres/infra.py
     -- 테이블 권한 부여
     GRANT ALL ON TABLE users TO teammate;
+=======
+
+    -- 테이블 권한 부여
+    GRANT ALL ON TABLE users TO teammate;
+
+>>>>>>> main:database.py
     -- 시퀀스 권한 부여
     GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO teammate;
     """
     conn.execute(text(create_users_table_sql))
+<<<<<<< HEAD:postgres/infra.py
 print(":흰색_확인_표시: users 테이블 생성 및 권한 부여 완료!")
+=======
+    print("✅ users 테이블 생성 및 권한 부여 완료!")
+>>>>>>> main:database.py
