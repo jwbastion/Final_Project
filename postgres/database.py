@@ -38,11 +38,11 @@ category_mapping = {
 
 # 업로드할 파일들
 files = [
-    "data/main/life.csv",
-    "data/main/play.csv",
-    "data/main/safety.csv",
-    "data/main/traffic.csv",
-    "data/main/health_care.csv"
+    "data/life.csv",
+    "data/play.csv",
+    "data/safety.csv",
+    "data/traffic.csv",
+    "data/health_care.csv"
 ]
 
 for file_path in files:
@@ -58,7 +58,8 @@ for file_path in files:
             # 테이블 생성 쿼리
             with engine.connect() as conn:
                 create_sql = f"""
-                CREATE TABLE IF NOT EXISTS {table_name} (
+                DROP TABLE IF EXISTS {table_name} CASCADE;
+                CREATE TABLE {table_name} (
                     id SERIAL PRIMARY KEY,
                     road_address TEXT,
                     business_name TEXT,
@@ -75,3 +76,53 @@ for file_path in files:
             print(f"✅ {table_name} 테이블에 {len(group_df)}개 행 삽입 완료!")
         else:
             print(f"⚠️ 카테고리 매핑 없음: {category}")
+
+# users 테이블 생성
+with engine.connect() as conn:
+    create_users_sql = """
+    DROP TABLE IF EXISTS users CASCADE;
+    CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    GRANT ALL ON TABLE users TO teammate;
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO teammate;
+    """
+    conn.execute(text(create_users_sql))
+    print("users 테이블 생성 및 권한 부여 완료!")
+
+# dagobang.csv 테이블 생성 및 삽입
+csv_path = "data/dagobang.csv"
+df_dagobang = pd.read_csv(csv_path, encoding="utf-8-sig")
+
+with engine.connect() as conn:
+    create_dagobang_sql = """
+    DROP TABLE IF EXISTS officetels CASCADE;
+    CREATE TABLE officetels (
+        id SERIAL PRIMARY KEY,
+        address TEXT,
+        rent_type TEXT,
+        deposit TEXT,
+        monthly_fee TEXT,
+        admin_fee TEXT,
+        structure TEXT,
+        exclusive_area TEXT,
+        floor TEXT,
+        building_use TEXT,
+        direction TEXT,
+        parking TEXT,
+        elevator TEXT,
+        available TEXT,
+        built_year TEXT,
+        agent TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """
+    conn.execute(text(create_dagobang_sql))
+
+# dagobang 데이터 삽입
+if not df_dagobang.empty:
+    df_dagobang.to_sql("officetels", engine, if_exists="append", index=False)
+    print(f"officetels 테이블에 {len(df_dagobang)}개 행 삽입 완료!")
