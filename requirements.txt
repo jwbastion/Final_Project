@@ -1,6 +1,4 @@
-flask
-pandas
-numpy
-faiss-cpu
-sentence-transformers
-scipy
+requests
+openrouteservice
+psycopg2
+python-dotenv
