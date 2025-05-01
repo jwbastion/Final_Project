@@ -73,9 +73,9 @@ for file_path in files:
 
             # 데이터 삽입
             group_df.to_sql(table_name, engine, if_exists="append", index=False)
-            print(f"✅ {table_name} 테이블에 {len(group_df)}개 행 삽입 완료!")
+            print(f"{table_name} 테이블에 {len(group_df)}개 행 삽입 완료!")
         else:
-            print(f"⚠️ 카테고리 매핑 없음: {category}")
+            print(f"카테고리 매핑 없음: {category}")
 
 # users 테이블 생성
 with engine.connect() as conn:
@@ -91,7 +91,7 @@ with engine.connect() as conn:
     GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO teammate;
     """
     conn.execute(text(create_users_sql))
-    print("users 테이블 생성 및 권한 부여 완료!")
+    print("✅ users 테이블 생성 및 권한 부여 완료!")
 
 # dagobang.csv 테이블 생성 및 삽입
 csv_path = "data/dagobang.csv"
@@ -125,4 +125,4 @@ with engine.connect() as conn:
 # dagobang 데이터 삽입
 if not df_dagobang.empty:
     df_dagobang.to_sql("officetels", engine, if_exists="append", index=False)
-    print(f"officetels 테이블에 {len(df_dagobang)}개 행 삽입 완료!")
+    print(f"✅ officetels 테이블에 {len(df_dagobang)}개 행 삽입 완료!")
