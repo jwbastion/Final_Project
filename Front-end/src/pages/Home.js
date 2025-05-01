@@ -59,7 +59,7 @@ export default function Home() {
       </div>
 
       {renderSection('챗봇 추천 이력', '🤖', chatbotHistory)}
-      {renderSection('거리 기반 추천 매물', '🧊', distanceRecs)}
+      {renderSection('거리 기반 추천 매물', '🏙️', distanceRecs)}
       {renderSection('예산 기반 추천 매물', '💰', budgetRecs)}
     </section>
   );
