@@ -1,9 +1,9 @@
 import os
 import pandas as pd
-import re
 from dotenv import load_dotenv
 from openai import OpenAI
 from pinecone import Pinecone, ServerlessSpec
+import re
 
 # 1. 환경변수 로드
 load_dotenv()
@@ -23,26 +23,14 @@ if index_name not in pc.list_indexes().names():
     )
 index = pc.Index(index_name)
 
-# 3. 매물 데이터 로드
-file_path = "Data/Data.csv"  # 경로 필요시 수정
+# 3. 매물.csv 로드
+df = pd.read_csv("Data/Data.csv", encoding="utf-8")
 
-df = pd.read_csv(file_path, encoding="utf-8")
-
-# 4. 결측값 전처리
-
+# 4. 전처리
 df["층수"] = df["층수"].fillna("미확인").astype(str)
 df["주실 방향"] = df["주실 방향"].fillna("미정")
 
-# 5. 소요시간 파싱 함수
-def extract_time_by_type(text, keyword):
-    text = str(text)
-    match = re.search(rf"{keyword} 약 (\\d+)분", text)
-    return int(match.group(1)) if match else 9999
-
-df["walk_time"] = df["소요시간"].apply(lambda x: extract_time_by_type(x, "도보"))
-df["transit_time"] = df["소요시간"].apply(lambda x: extract_time_by_type(x, "대중교통"))
-
-# 6. 임베딩 텍스트 생성
+# 5. 임베딩 텍스트 생성
 df["embed_text"] = (
     df["지번주소"]
     + ", 월세 " + df["월세(만원)"].astype(str) + "만"
@@ -54,7 +42,23 @@ df["embed_text"] = (
     + ", 소요시간 " + df["소요시간"]
 )
 
-# 7. OpenAI 임베딩 + Pinecone 업서트
+# 6. 소요시간 파싱 함수
+def extract_time_by_type(text, keyword):
+    text = str(text)
+    match = re.search(rf"{keyword} 약 (\d+)분", text)
+    return int(match.group(1)) if match else 9999
+
+def extract_station_name(text):
+    text = str(text)
+    match = re.match(r"([가-힣0-9]+역)", text)
+    return match.group(1) if match else "미확인역"
+
+# 7. 시간 및 역 이름 파싱 추가
+df["walk_time"] = df["소요시간"].apply(lambda x: extract_time_by_type(x, "도보"))
+df["transit_time"] = df["소요시간"].apply(lambda x: extract_time_by_type(x, "대중교통"))
+df["station"] = df["소요시간"].apply(extract_station_name)
+
+# 8. OpenAI 임베딩 + Pinecone 업서트
 batch_size = 50
 records = []
 
@@ -77,10 +81,10 @@ for i, row in df.iterrows():
             "floor": row["층수"],
             "walk_time": int(row["walk_time"]),
             "transit_time": int(row["transit_time"]),
-            "lat": float(row["lat"]),
-            "lng": float(row["lng"]),
             "station": row["station"],
-            "subway_time": row["소요시간"]
+            "subway_time": row["소요시간"],
+            "lat": float(row["lat"]),
+            "lng": float(row["lng"])
         }
 
         records.append((str(i), embedding, meta))
@@ -96,4 +100,4 @@ for i, row in df.iterrows():
 if records:
     index.upsert(vectors=records)
 
-print("✅ 전체 업서트 완료!")
+print("✅ 임베딩 및 Pinecone 업로드 완료!")
