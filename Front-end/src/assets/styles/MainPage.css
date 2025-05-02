@@ -4,10 +4,13 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100vw;
+  min-width: 0;
 }
 
 /* 헤더 */
 .header {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,6 +20,7 @@
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 2px;
+  box-sizing: border-box;
 }
 
 /* 로그아웃 버튼 */

@@ -33,7 +33,7 @@ export default function Home() {
     'D형 - 예산 기반 매물 1',
   ];
 
-  const renderSection = (title, emoji, items) => (
+  const renderSection = (title: string, emoji: string, items: string[]) => (
     <div className="section">
       <h3 className="section-title">{emoji} {title}</h3>
       <div className="card-grid">
