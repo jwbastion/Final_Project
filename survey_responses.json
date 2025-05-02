@@ -1,0 +1,38 @@
+[
+  {
+    "searchPlace": "숭실대학교",
+    "address": "서울 동작구 상도로 369",
+    "lat": 37.4955063,
+    "lng": 126.9563751,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "",
+    "address": "서울 중구 마장로",
+    "lat": 37.56774716119344,
+    "lng": 127.01053619384767,
+    "monthlyRent": "50~70만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "상관없음"
+  },
+  {
+    "searchPlace": "숭실대학교",
+    "address": "서울 동작구 상도로 369",
+    "lat": 37.4955063,
+    "lng": 126.9563751,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "창동역",
+    "address": "서울 도봉구 마들로11길 77",
+    "lat": 37.6531817,
+    "lng": 127.0476987,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
+  }
+]

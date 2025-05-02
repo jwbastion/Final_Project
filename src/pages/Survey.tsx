@@ -39,7 +39,8 @@ const SurveyPage: React.FC = () => {
         {step === 1 && <SurveyStep1 onNext={handleNextFrom1} />}
         {step === 2 && locData &&
           <SurveyStep2 data={locData} onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <SurveyStep3 onNext={() => setStep(4)}/>}
+        {step === 3 && locData && 
+          <SurveyStep3 data={locData} onNext={() => setStep(4)}/>}
         {step === 4 && <SurveyStep4 />}
       </div>
     </div>

@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import FavoritesPage from './pages/FavoritesPage';
 import LoginPage from './pages/Login';
 import MainPage from './pages/Mainpage';
+import ProfilePage from './pages/Profile';
 import SignupPage from './pages/Signup';
 import SurveyPage from './pages/Survey';
 
@@ -11,7 +13,11 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/survey" element={<SurveyPage />} />
-        <Route path="/main" element={<MainPage />} />  {/* 메인 페이지 */}
+
+        {/* 1) MainPage는 Sidebar 없이 */}
+        <Route path="/main"    element={<MainPage />} />
+        <Route path="/main/favorites" element={<FavoritesPage />} />
+        <Route path="/main/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );

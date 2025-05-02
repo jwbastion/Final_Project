@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import sideImage from '../assets/images/ex4.gif'; // 실제 이미지 경로
+import sideImage from '../assets/images/Map.gif'; // 실제 이미지 경로
 import '../assets/styles/login.css'; // 경로를 실제 위치에 맞게 조정
 
 const LoginPage: React.FC = () => {
