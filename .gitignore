@@ -20,10 +20,10 @@ Thumbs.db
 *.log
 # 기타
 *.csv
-
 *.zip
 
 *.pem
+
 # Logs
 logs
 *.log
