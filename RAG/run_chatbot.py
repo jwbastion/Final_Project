@@ -1,43 +1,97 @@
-from preprocess.data_loader import load_all_infra, load_subcategories
-from preprocess.infra_features import PARENT_RADIUS, SUBCAT_RADIUS, count_subcat_in_radius
+import os
+import numpy as np
+from math import radians, sin, cos, asin
+from dotenv import load_dotenv
+from openai import OpenAI
+from pinecone import Pinecone, ServerlessSpec
+from sklearn.neighbors import BallTree
+from preprocess.db_loader import load_infra_from_db, TABLES
+from preprocess.infra_features import build_trees, find_nearest_tree, haversine
 
-infra_dfs   = load_all_infra()
-subcats_map = load_subcategories(infra_dfs)
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+index_name = os.getenv("PINECONE_INDEX_NAME")
+if index_name not in pc.list_indexes().names():
+    pc.create_index(
+        name=index_name,
+        dimension=1536,
+        metric="cosine",
+        spec=ServerlessSpec(cloud=os.getenv("PINECONE_CLOUD"), region=os.getenv("PINECONE_REGION"))
+    )
+index = pc.Index(index_name)
+infra_dfs = load_infra_from_db()
+build_trees(infra_dfs)
 
+def ask(prompt):
+    while True:
+        resp = input(prompt).strip()
+        if resp:
+            return resp
 
-def ask_rating(prompt, scale=5):
-    val = int(input(f"{prompt} (1: 전혀, {scale}: 매우): ").strip())
-    return max(1, min(scale, val))
+def ask_int(prompt):
+    while True:
+        resp = ask(prompt)
+        if resp.isdigit():
+            return int(resp)
 
+def run_chatbot():
+    while True:
+        if ask("exit 입력 시 종료, 계속하려면 엔터: ").lower() == 'exit':
+            break
+        user_lat = float(ask("위도: "))
+        user_lng = float(ask("경도: "))
+        rent = ask_int("월세 최대 (만원): ")
+        deposit = ask_int("보증금 최대 (만원): ")
+        maint = ask_int("관리비 최대 (만원): ")
+        theme_map = {
+            1: ['life_convenience_store','life_mart','life_cafe','life_park','life_post_office','life_department_store','life_daiso','life_community_center'],
+            2: ['traffic_subway','traffic_bus'],
+            3: ['health_hospital','health_pharmacy'],
+            4: ['play_cinema','play_pc_cafe','play_karaoke'],
+            5: ['safety_police_station','officetels']
+        }
+        print("1) 집 근처 편의  2) 교통  3) 의료  4) 여가  5) 안전")
+        scenario = ask_int("선택 (1-5): ")
+        subs = theme_map.get(scenario, [])
+        for i, tbl in enumerate(subs, 1):
+            print(f"{i}) {tbl}")
+        chosen_tbl = subs[ask_int("선택 번호: ") - 1]
+        row, dist_m = find_nearest_tree(chosen_tbl, user_lat, user_lng)
+        print(f"{chosen_tbl} 거리: {int(dist_m)}m")
+        max_dist = int(dist_m) if ask("만족? (y/n): ").lower().startswith('y') else ask_int("허용 거리 (m): ")
+        parts = [f"위치({user_lat},{user_lng})", f"월세≤{rent}", f"보증금≤{deposit}", f"관리비≤{maint}", f"{chosen_tbl}≤{max_dist}m"]
+        embedding = client.embeddings.create(model="text-embedding-ada-002", input=", ".join(parts)).data[0].embedding
+        infra_station = row['business_name']
+        filter_cond = {
+            'rent': {'$lte': rent},
+            'deposit': {'$lte': deposit},
+            'maint': {'$lte': maint},
+            'station': {'$eq': infra_station}
+        }
+        res = index.query(vector=embedding, top_k=100, include_metadata=True, filter=filter_cond)
+        candidates = res.matches
+        filtered = []
+        for m in candidates:
+            lat = m.metadata['lat']
+            lng = m.metadata['lng']
+            dist_m2 = haversine(user_lat, user_lng, lat, lng) * 1000
+            if scenario == 2:
+                t = m.metadata['walk_time']
+                if t <= maint and dist_m2 <= max_dist:
+                    filtered.append((m, dist_m2))
+            else:
+                if dist_m2 <= max_dist:
+                    filtered.append((m, dist_m2))
+        filtered.sort(key=lambda x: x[0].score, reverse=True)
+        matches = [m for m, _ in filtered[:5]]
+        if not matches:
+            print("조건에 맞는 매물이 없습니다.")
+        else:
+            for i, m in enumerate(matches, 1):
+                md = m.metadata
+                dist = int(haversine(user_lat, user_lng, md['lat'], md['lng']) * 1000)
+                print(f"{i}. {md['address']} | 월세 {md['rent']}만 | 보증금 {md['deposit']}만 | 거리 {dist}m")
 
-def ask_yes_no(prompt):
-    return input(f"{prompt} (y/n): ").strip().lower().startswith('y')
-
-
-def run_chatbot(lat, lon, rent, deposit, maint):
-    # 1) 부모 카테고리 중요도 수집
-    parent_scores = {parent: ask_rating(f"{parent} 인프라를 얼마나 중요하게 여기시나요?")
-                     for parent in PARENT_RADIUS}
-
-    # 2) 서브카테고리별 추가 질문
-    sub_scores = {}
-    for parent, score in parent_scores.items():
-        if score >= 3:
-            for subcat in subcats_map[parent]:
-                # 다섯 인자: df, lat, lon, subcat, radius
-                cnt = count_subcat_in_radius(
-                    infra_dfs[parent], lat, lon,
-                    subcat, SUBCAT_RADIUS[subcat]
-                )
-                if parent in ('traffic', 'safety'):
-                    ans = ask_yes_no(f"{subcat}이 주변에 {cnt}개 있어요. 우선순위로 두시겠습니까?")
-                else:
-                    ans = ask_rating(f"{subcat}이 주변에 {cnt}개 있어요. 얼마나 중요하게 보시나요?")
-                sub_scores[f"{parent}:{subcat}"] = ans
-
-    print("\n▶ 최종 인프라 선호도 요약:")
-    for key, value in {**parent_scores, **sub_scores}.items():
-        print(f"  {key} -> {value}")
 if __name__ == '__main__':
-    # 테스트 
-    run_chatbot(37.5055712636346, 126.941856308051, 50, 500, 10)
+    run_chatbot()

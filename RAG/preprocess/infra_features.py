@@ -1,51 +1,49 @@
-from haversine import haversine
+import numpy as np
+from sklearn.neighbors import BallTree
+from math import radians, sin, cos, asin
 
-# 대분류별 기본 반경 (미터)
-PARENT_RADIUS = {
-    'life':        200,
-    'traffic':     250,
-    'safety':      500,
-    'health_care': 400,
-    'health':      300,
-    'play':        300,
-}
 
-# 서브카테고리별 반경 (미터)
-SUBCAT_RADIUS = {
-    '편의점': 200, '대형마트': 200, '백화점': 200, '카페': 200, '공원': 200,
-    '지하철역': 250, '버스정류장': 250, '우체국': 200,
-    '파출소': 500, '지구대': 500, '주민센터': 200,
-    '병원': 400, '약국': 400, '다이소': 300, '버스': 300, '지하철': 300,
-    '헬스장': 300, '골프연습장': 300, '골프장': 300,
-    'PC방': 300, '영화관': 300, '노래방': 300,
-}
+infra_dfs = {}
+trees = {}
+earth_radius_km = 6371.0088
 
-def count_in_radius(df, user_lat, user_lon, radius_m):
-    """
-    df: DataFrame with 'latitude' and 'longitude' columns.
-    Returns count of rows within radius_m (meters) from user location.
-    """
-    def within(row):
-        dist_km = haversine((user_lat, user_lon), (row['latitude'], row['longitude']))
-        return dist_km * 1000 <= radius_m
-    return int(df.apply(within, axis=1).sum())
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371.0088  # 지구 반지름 (km)
+    lat1, lon1, lat2, lon2 = map(radians, (lat1, lon1, lat2, lon2))
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = sin(dlat/2)**2 + cos(lat1)*cos(lat2)*sin(dlon/2)**2
+    return 2 * R * asin(a**0.5)
 
-def count_subcat_in_radius(df, user_lat, user_lon, subcat, radius_m):
-    """
-    df: DataFrame with 'category', 'latitude', 'longitude' columns.
-    subcat: subcategory name to filter.
-    radius_m: radius in meters.
-    """
-    sub_df = df[df['category'] == subcat]
-    return count_in_radius(sub_df, user_lat, user_lon, radius_m)
+def build_trees(infra_dict):
+    global infra_dfs, trees
+    infra_dfs = infra_dict   
+    trees = {}
+    for tbl, df in infra_dfs.items():
+        coords = np.radians(df[['latitude', 'longitude']].values)
+        trees[tbl] = BallTree(coords, metric='haversine')
 
-def extract_features(infra_dfs, user_lat, user_lon):
+def find_nearest_tree(tbl, user_lat, user_lng):
     """
-    infra_dfs: dict of DataFrames keyed by parent category.
-    Returns dict of parent_count features.
+    tbl: 테이블명(key)
+    user_lat/lng: 사용자 위치
+    반환: (row: pandas.Series, dist_m: float)
     """
-    features = {}
-    for cat, df in infra_dfs.items():
-        cnt = count_in_radius(df, user_lat, user_lon, PARENT_RADIUS.get(cat, 0))
-        features[f'{cat}_count'] = cnt
-    return features
+    tree = trees[tbl]
+    pt = np.radians([[user_lat, user_lng]])
+    dist_rad, idxs = tree.query(pt, k=1)
+    dist_m = dist_rad[0][0] * earth_radius_km * 1000
+    row = infra_dfs[tbl].iloc[idxs[0][0]]
+    return row, dist_m
+
+def count_in_radius_tree(tbl, user_lat, user_lng, radius_m):
+    """
+    tbl: 테이블명
+    radius_m: 검색 반경 (미터)
+    반환: 해당 tbl에서 radius_m 이내 포함된 개수
+    """
+    tree = trees[tbl]
+    pt = np.radians([[user_lat, user_lng]])
+    r = (radius_m / 1000) / earth_radius_km
+    inds = tree.query_radius(pt, r=r)[0]
+    return len(inds)

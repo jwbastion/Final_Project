@@ -4,6 +4,7 @@ from math import radians, cos, sin, asin
 from dotenv import load_dotenv
 from openai import OpenAI
 from pinecone import Pinecone, ServerlessSpec
+from sqlalchemy import create_engine
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -18,9 +19,15 @@ if index_name not in pc.list_indexes().names():
     )
 index = pc.Index(index_name)
 
-station_df = pd.read_csv("Data/지하철(위경도).csv", encoding="utf-8")
+db_url = os.getenv("DB_URL")  # ✅ 변경된 부분
+engine = create_engine(db_url)
 
-# 3. haversine 함수 (거리 계산)
+station_df = pd.read_sql(
+    "SELECT business_name AS station_name, latitude AS lat, longitude AS lng FROM traffic_subway",
+    engine
+)
+
+
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371  # km
     dlat = radians(lat2 - lat1)
@@ -28,7 +35,6 @@ def haversine(lat1, lon1, lat2, lon2):
     a = sin(dlat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon/2)**2
     return R * 2 * asin(a**0.5)
 
-# 가장 가까운 지하철역과 거리 계산 함수
 def find_nearest_station(user_lat, user_lng):
     station_df['dist'] = station_df.apply(lambda r: haversine(user_lat, user_lng, r.lat, r.lng), axis=1)
     nearest = station_df.loc[station_df.dist.idxmin()]
@@ -93,7 +99,13 @@ def run_chatbot(user_lat, user_lng, rent=None, deposit=None, maint=None):
     print(f"\n[쿼리 문자열] {query_str}")
     embedding = get_embedding(query_str)
 
-    filter_cond = {'rent': {'$lte': rent}, 'deposit': {'$lte': deposit}, 'maint': {'$lte': maint}}
+    filter_cond = {
+    'rent': {'$lte': rent},
+    'deposit': {'$lte': deposit},
+    'maint': {'$lte': maint},
+    'station': {'$eq': conds['station']},
+    field: {'$lte': conds['time_limit']}  
+}
     matches = []
 
     if service == '1':
