@@ -1,13 +1,17 @@
 {
-    "name": "Python Flask Dev",
-    "dockerComposeFile": "../docker-compose.yml",
-    "service": "web",
-    "workspaceFolder": "/app",
-    "extensions": [
-      "ms-python.python",
-      "ms-azuretools.vscode-docker"
-    ],
-    "settings": {
-      "python.pythonPath": "/usr/local/bin/python"
-    }
-  }  
+  "name": "final-project-dev",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-azuretools.vscode-docker"
+  ],
+  "forwardPorts": [8000, 5432, 8080],
+  "remoteUser": "root",
+  "postCreateCommand": "pip install -r requirements.txt"
+}
