@@ -1,4 +1,7 @@
 # 🗂️ PostgreSQL + pgAdmin 사용 가이드
+
+이 문서는 Docker로 구축된 zipup 프로젝트의 PostgreSQL 데이터베이스에 접속하고 활용하는 방법을 안내합니다.
+
 ---
 
 ## 🐳 1. Docker로 서버 실행
