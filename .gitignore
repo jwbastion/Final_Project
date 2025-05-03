@@ -23,6 +23,7 @@ Thumbs.db
 
 *.zip
 
+*.pem
 # Logs
 logs
 *.log
