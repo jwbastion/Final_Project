@@ -4,7 +4,7 @@ from urllib.parse import quote_plus
 from dotenv import load_dotenv
 import os
 
-# Load .env
+# 1. Load .env 환경 변수
 load_dotenv()
 
 user = os.getenv("POSTGRES_USER")
@@ -13,10 +13,10 @@ host = os.getenv("POSTGRES_HOST")
 port = os.getenv("POSTGRES_PORT")
 db = os.getenv("POSTGRES_DB")
 
-# SQLAlchemy 연결
+# 2. SQLAlchemy DB 연결
 engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}")
 
-# 한글 카테고리 → 영어 테이블명 매핑
+# 3. 한글 카테고리 → 테이블명 매핑
 category_mapping = {
     '대형마트': 'life_mart',
     '백화점': 'life_department_store',
@@ -36,7 +36,7 @@ category_mapping = {
     '약국': 'health_pharmacy'
 }
 
-# 업로드할 파일들
+# 4. CSV 목록 정의
 files = [
     "data/life.csv",
     "data/play.csv",
@@ -45,9 +45,9 @@ files = [
     "data/health_care.csv"
 ]
 
+# 5. 인프라 테이블 생성 및 데이터 삽입
 for file_path in files:
     df = pd.read_csv(file_path, encoding="utf-8-sig")
-
     if 'category' not in df.columns:
         continue
 
@@ -55,7 +55,6 @@ for file_path in files:
         table_name = category_mapping.get(category)
 
         if table_name:
-            # 테이블 생성 쿼리
             with engine.connect() as conn:
                 create_sql = f"""
                 DROP TABLE IF EXISTS {table_name} CASCADE;
@@ -71,13 +70,12 @@ for file_path in files:
                 """
                 conn.execute(text(create_sql))
 
-            # 데이터 삽입
             group_df.to_sql(table_name, engine, if_exists="append", index=False)
-            print(f"{table_name} 테이블에 {len(group_df)}개 행 삽입 완료!")
+            print(f"✅ {table_name} 테이블에 {len(group_df)}개 행 삽입 완료!")
         else:
-            print(f"카테고리 매핑 없음: {category}")
+            print(f"⚠️ 카테고리 매핑 없음: {category}")
 
-# users 테이블 생성
+# 6. users 테이블 생성
 with engine.connect() as conn:
     create_users_sql = """
     DROP TABLE IF EXISTS users CASCADE;
@@ -85,7 +83,12 @@ with engine.connect() as conn:
         id SERIAL PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        nickname TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login_at TIMESTAMP,
+        budget_min INTEGER,
+        budget_max INTEGER,
+        preferred_area TEXT
     );
     GRANT ALL ON TABLE users TO teammate;
     GRANT USAGE, SELECT, UPDATE ON SEQUENCE users_id_seq TO teammate;
@@ -93,7 +96,7 @@ with engine.connect() as conn:
     conn.execute(text(create_users_sql))
     print("✅ users 테이블 생성 및 권한 부여 완료!")
 
-# dagobang.csv 테이블 생성 및 삽입
+# 7. officetels 테이블 생성 및 삽입
 csv_path = "data/dagobang.csv"
 df_dagobang = pd.read_csv(csv_path, encoding="utf-8-sig")
 
@@ -122,7 +125,42 @@ with engine.connect() as conn:
     """
     conn.execute(text(create_dagobang_sql))
 
-# dagobang 데이터 삽입
 if not df_dagobang.empty:
     df_dagobang.to_sql("officetels", engine, if_exists="append", index=False)
     print(f"✅ officetels 테이블에 {len(df_dagobang)}개 행 삽입 완료!")
+
+# 8. chat_history 테이블 생성
+with engine.connect() as conn:
+    create_chat_sql = """
+    DROP TABLE IF EXISTS chat_history CASCADE;
+    CREATE TABLE chat_history (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        turn INTEGER NOT NULL,
+        speaker TEXT NOT NULL,  -- 닉네임 또는 'aichat'
+        role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    GRANT ALL ON TABLE chat_history TO teammate;
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE chat_history_id_seq TO teammate;
+    """
+    conn.execute(text(create_chat_sql))
+    print("✅ chat_history 테이블 생성 완료!")
+
+# 9. recommendation_result 테이블 생성
+with engine.connect() as conn:
+    create_reco_sql = """
+    DROP TABLE IF EXISTS recommendation_result CASCADE;
+    CREATE TABLE recommendation_result (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        chat_id INTEGER REFERENCES chat_history(id) ON DELETE SET NULL,
+        result_json TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    GRANT ALL ON TABLE recommendation_result TO teammate;
+    GRANT USAGE, SELECT, UPDATE ON SEQUENCE recommendation_result_id_seq TO teammate;
+    """
+    conn.execute(text(create_reco_sql))
+    print("✅ recommendation_result 테이블 생성 완료!")
