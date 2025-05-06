@@ -1,3 +1,7 @@
+openai
+pinecone-client
+psycopg2-binary
+python-dotenv
 pandas
 haversine
 flask

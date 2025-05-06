@@ -5,7 +5,7 @@ from openai import OpenAI
 from pinecone import Pinecone, ServerlessSpec
 import re
 
-# 1. 환경변수 로드
+# 1. 환경 변수 로드
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
@@ -23,23 +23,31 @@ if index_name not in pc.list_indexes().names():
     )
 index = pc.Index(index_name)
 
-# 3. 매물.csv 로드
+# 3. 데이터 로드
 df = pd.read_csv("Data/Data.csv", encoding="utf-8")
 
 # 4. 전처리
 df["층수"] = df["층수"].fillna("미확인").astype(str)
 df["주실 방향"] = df["주실 방향"].fillna("미정")
 
-# 5. 임베딩 텍스트 생성
+# 5. 임베딩 텍스트 생성 (모든 주요 정보 포함)
 df["embed_text"] = (
-    df["지번주소"]
+    "건물유형: " + df["type"]
+    + ", 자치구: " + df["자치구"]
+    + ", 법정동: " + df["법정동"]
+    + ", 주소: " + df["지번주소"]
     + ", 월세 " + df["월세(만원)"].astype(str) + "만"
     + ", 보증금 " + df["보증금(만원)"].astype(str) + "만"
     + ", 관리비 " + df["관리비(만원)"].astype(str) + "만"
     + ", 평수 " + df["평수"].astype(str) + "평"
-    + ", 방향 " + df["주실 방향"]
-    + ", " + df["층수"] + "층"
-    + ", 소요시간 " + df["소요시간"]
+    + ", 방향: " + df["주실 방향"]
+    + ", 층수: " + df["층수"]
+    + ", 주차: " + df["주차"]
+    + ", 난방: " + df["난방시설"]
+    + ", 엘리베이터: " + df["엘리베이터"]
+    + ", 생활시설: " + df["생활시설"]
+    + ", 안전시설: " + df["안전시설"]
+    + ", 소요시간: " + df["소요시간"]
 )
 
 # 6. 소요시간 파싱 함수
@@ -48,12 +56,14 @@ def extract_time_by_type(text, keyword):
     match = re.search(rf"{keyword} 약 (\d+)분", text)
     return int(match.group(1)) if match else 9999
 
+# 6.1. 역 이름 파싱 함수 (개선된 버전)
 def extract_station_name(text):
     text = str(text)
-    match = re.match(r"([가-힣0-9]+역)", text)
+    # 텍스트 전체에서 괄호 포함한 한글/숫자 조합 '○○역' 토큰을 찾아냅니다
+    match = re.search(r"([가-힣0-9\(\)]+역)", text)
     return match.group(1) if match else "미확인역"
 
-# 7. 시간 및 역 이름 파싱 추가
+# 7. 시간 및 역 이름 파싱
 df["walk_time"] = df["소요시간"].apply(lambda x: extract_time_by_type(x, "도보"))
 df["transit_time"] = df["소요시간"].apply(lambda x: extract_time_by_type(x, "대중교통"))
 df["station"] = df["소요시간"].apply(extract_station_name)
@@ -72,17 +82,25 @@ for i, row in df.iterrows():
 
         meta = {
             "id": str(i),
+            "type": row["type"],
             "address": row["지번주소"],
-            "rent": float(row["월세(만원)"]),
-            "deposit": float(row["보증금(만원)"]),
-            "maint": float(row["관리비(만원)"]),
-            "size": float(row["평수"]),
+            "자치구": row["자치구"],
+            "법정동": row["법정동"],
+            "rent": float(row["월세(만원)" ]),
+            "deposit": float(row["보증금(만원)" ]),
+            "maint": float(row["관리비(만원)" ]),
+            "size": float(row["평수" ]),
             "direction": row["주실 방향"],
             "floor": row["층수"],
             "walk_time": int(row["walk_time"]),
             "transit_time": int(row["transit_time"]),
-            "station": row["station"],
+            "station": row["station"],  # 개선된 파싱 적용
             "subway_time": row["소요시간"],
+            "주차": row["주차"],
+            "난방": row["난방시설"],
+            "엘리베이터": row["엘리베이터"],
+            "생활시설": row["생활시설"],
+            "안전시설": row["안전시설"],
             "lat": float(row["lat"]),
             "lng": float(row["lng"])
         }
@@ -100,4 +118,4 @@ for i, row in df.iterrows():
 if records:
     index.upsert(vectors=records)
 
-print("✅ 임베딩 및 Pinecone 업로드 완료!")
+print("✅ 전체 embed_text 수정 후 Pinecone 재업서트 완료!")
