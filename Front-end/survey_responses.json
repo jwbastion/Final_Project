@@ -34,5 +34,23 @@
     "monthlyRent": "30~50만원",
     "deposit": "500~1,000만원",
     "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "광진구청",
+    "address": "서울 광진구 자양로19길",
+    "lat": 37.5382238,
+    "lng": 127.0823741,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "광진구청",
+    "address": "서울 광진구 자양로19길",
+    "lat": 37.5382238,
+    "lng": 127.0823741,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
   }
 ]

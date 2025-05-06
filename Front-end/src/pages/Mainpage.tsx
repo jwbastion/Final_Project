@@ -25,8 +25,8 @@ const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
 
   const scrollByCard = (dir: 'left' | 'right') => {
     if (!trackRef.current) return;
-    const cardWidth = 320;      // 카드 고정 너비
-    const gap       = 24;       // 카드 간격
+    const cardWidth = 300;      // 카드 고정 너비
+    const gap       = 20;       // 카드 간격
     const distance = dir === 'right'
       ? cardWidth + gap
       : - (cardWidth + gap);
@@ -112,7 +112,7 @@ const MainPage: React.FC = () => {
               <li key={menu.label}>
                 <button
                   type="button"
-                  className={`mp-sidebar-link${location.pathname === menu.path ? ' active' : ''}`}
+                  className={`mp-sidebar-link${pathname === menu.path ? ' active' : ''}`}
                   onClick={() => navigate(menu.path)}
                 >
                   {menu.label}
