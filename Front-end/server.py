@@ -30,11 +30,17 @@ def signup():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
+    nickname = data.get("nickname")
 
     if email in users:
         return jsonify({"success": False, "message": "User already exists"}), 400
 
-    users[email] = password
+    # 닉네임 중복 체크
+    for user in users.values():
+        if user["nickname"] == nickname:
+            return jsonify({"success": False, "message": "Nickname already taken"}), 400
+
+    users[email] = {"password": password, "nickname": nickname}
     return jsonify({"success": True})
 
 
@@ -44,7 +50,7 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
-    if email not in users or users[email] != password:
+    if email not in users or users[email]["password"] != password:
         return jsonify({"success": False, "message": "Invalid credentials"}), 401
 
     return jsonify({"success": True})

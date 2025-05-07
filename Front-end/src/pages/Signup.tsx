@@ -5,6 +5,7 @@ import sideImage from '../assets/images/ex4.gif';
 import '../assets/styles/login.css'; // 기존 스타일 재사용
 
 const SignupPage: React.FC = () => {
+  const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -22,6 +23,11 @@ const SignupPage: React.FC = () => {
         alert('유효한 이메일 주소를 입력해주세요.');
         return;
       }
+    
+    if (!nickname.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
       
     if (password.length < 8) {
         alert('비밀번호는 8자 이상이어야 합니다.');
@@ -34,7 +40,7 @@ const SignupPage: React.FC = () => {
     }
     // 회원가입 처리 로직
     try {
-        await axios.post('http://localhost:5000/signup', { email, password });
+        await axios.post('http://localhost:5000/signup', { email, nickname, password });
         alert('회원가입 성공! 로그인 페이지로 이동합니다.');
         navigate('/');
       } catch (error) {
@@ -60,6 +66,17 @@ const SignupPage: React.FC = () => {
                 id="signup-email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="signup-nickname" className="form-label">닉네임</label>
+              <input
+                type="text"
+                className="form-control"
+                id="signup-nickname"
+                value={nickname}
+                onChange={e => setNickname(e.target.value)}
                 required
               />
             </div>

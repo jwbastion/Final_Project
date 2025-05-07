@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/styles/MainPage.css';
 
 interface SurveyData {
@@ -61,45 +61,18 @@ const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
   );
 };
 
-
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
 
-  // 사이드바 메뉴 정의
+  const [favorites, setFavorites] = useState<string[]>([]); // 찜한 목록 저장
+
   const sidebarMenus = [
     { label: '홈', path: '/main' },
     { label: '관심 목록', path: '/main/favorites' },
     { label: '프로필', path: '/main/profile' },
     { label: '로그아웃', path: '/' },
   ];
-
-  const [survey, setSurvey] = useState<SurveyData | null>(null);
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/survey/latest')
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then((data: SurveyData) => setSurvey(data))
-      .catch(console.error);
-  }, []);
-
-  // “나의 설문 응답”용 배열(label + value)
-  const surveyItems = survey
-    ? [
-        `검색장소: ${survey.searchPlace}`,
-        `주소: ${survey.address}`,
-        `위도: ${survey.lat}`,
-        `경도: ${survey.lng}`,
-        `월세: ${survey.monthlyRent}`,
-        `보증금: ${survey.deposit}`,
-        `관리비: ${survey.maintenanceFee}`,
-      ]
-    : [];
-
-  // 각 섹션 데이터
-  const chatbotPrefs  = ['A형 - 추천 성향 1',     'A형 - 추천 성향 2',     'C형 - 추천 성향 3'];
-  const distanceRecs  = ['A형 - 거리 기반 매물 1', 'C형 - 거리 기반 매물 1'];
-  const budgetRecs    = ['B형 - 예산 기반 매물 1', 'D형 - 예산 기반 매물 1'];
 
   return (
     <div className="mp-root">
@@ -118,17 +91,14 @@ const MainPage: React.FC = () => {
                   {menu.label}
                 </button>
               </li>
-          ))}
+            ))}
           </ul>
         </nav>
       </aside>
 
-      {/* 메인 콘텐츠 */}
+      {/* 오른쪽 페이지 교체 영역 */}
       <main className="mp-main">
-      <Section title="사용자 유형"    emoji="📋" items={surveyItems}/>
-        <Section title="챗봇 추천 성향"     emoji="🤖" items={chatbotPrefs} />
-        <Section title="거리 기반 추천 매물" emoji="📍" items={distanceRecs} />
-        <Section title="예산 기반 추천 매물" emoji="💰" items={budgetRecs} />
+        <Outlet context={{favorites, setFavorites}}/>
       </main>
     </div>
   );

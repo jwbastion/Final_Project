@@ -36,10 +36,10 @@
     "maintenanceFee": "5~10만원"
   },
   {
-    "searchPlace": "광진구청",
-    "address": "서울 광진구 자양로19길",
-    "lat": 37.5382238,
-    "lng": 127.0823741,
+    "searchPlace": "창동역",
+    "address": "서울 도봉구 마들로11길 77",
+    "lat": 37.6531817,
+    "lng": 127.0476987,
     "monthlyRent": "30~50만원",
     "deposit": "500~1,000만원",
     "maintenanceFee": "5~10만원"
@@ -49,6 +49,15 @@
     "address": "서울 광진구 자양로19길",
     "lat": 37.5382238,
     "lng": 127.0823741,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "도봉구청",
+    "address": "서울 도봉구 마들로 656",
+    "lat": 37.6687691,
+    "lng": 127.0464912,
     "monthlyRent": "30~50만원",
     "deposit": "500~1,000만원",
     "maintenanceFee": "5~10만원"
