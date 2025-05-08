@@ -16,6 +16,8 @@ class LLMProcessor:
             for i, prop in enumerate(context["location_based"], 1):
                 infra_score = prop.get("infra_score", 0)
                 context_text += f"{i}. {prop['address']} ({prop['station']}) - 월세 {prop['rent']}만원, 보증금 {prop['deposit']}만원, 관리비 {prop['maint']}만원, {prop['time_info']}, 인프라 점수: {infra_score:.1f}\n"
+                context_text += f"   층수: {prop['floor']}, 난방: {prop['heating_type']}, 주차: {'가능' if prop['parking'] else '불가능'}\n"
+                context_text += f"   시설: {prop['facilities']}, 조망: {prop['view']}\n"
                 
                 # 인프라 세부 정보 추가
                 if prop.get("infra_details"):
@@ -29,6 +31,8 @@ class LLMProcessor:
             for i, prop in enumerate(context["budget_based"], 1):
                 infra_score = prop.get("infra_score", 0)
                 context_text += f"{i}. {prop['address']} ({prop['station']}) - 월세 {prop['rent']}만원, 보증금 {prop['deposit']}만원, 관리비 {prop['maint']}만원, {prop['time_info']}, 인프라 점수: {infra_score:.1f}\n"
+                context_text += f"   층수: {prop['floor']}, 난방: {prop['heating_type']}, 주차: {'가능' if prop['parking'] else '불가능'}\n"
+                context_text += f"   시설: {prop['facilities']}, 조망: {prop['view']}\n"
                 
                 # 인프라 세부 정보 추가
                 if prop.get("infra_details"):
@@ -42,6 +46,8 @@ class LLMProcessor:
             for i, prop in enumerate(context["combined"], 1):
                 infra_score = prop.get("infra_score", 0)
                 context_text += f"{i}. {prop['address']} ({prop['station']}) - 월세 {prop['rent']}만원, 보증금 {prop['deposit']}만원, 관리비 {prop['maint']}만원, {prop['time_info']}, 인프라 점수: {infra_score:.1f}\n"
+                context_text += f"   층수: {prop['floor']}, 난방: {prop['heating_type']}, 주차: {'가능' if prop['parking'] else '불가능'}\n"
+                context_text += f"   시설: {prop['facilities']}, 조망: {prop['view']}\n"
                 
                 # 인프라 세부 정보 추가
                 if prop.get("infra_details"):
@@ -57,7 +63,8 @@ class LLMProcessor:
             context_text += "2. 검색 반경을 넓혀보세요 (현재 반경 → 더 넓은 범위)\n"
             context_text += "3. 다른 지역도 고려해보세요\n"
         
-        prompt = f"""당신은 부동산 매물 추천 AI 챗봇입니다. 사용자의 위치, 예산, 이동 방식, 인프라 선호도 등을 고려하여 최적의 매물을 추천해주세요.
+        # LLM 프롬프트 구성
+        prompt = f"""당신은 부동산 매물 추천 AI 챗봇입니다. 사용자의 위치, 예산, 이동 방식, 인프라 선호도, 매물 특성 등을 고려하여 최적의 매물을 추천해주세요.
 
 대화 이력:
 {history_text}
@@ -72,8 +79,9 @@ class LLMProcessor:
 """
 
         try:
+            # LLM 호출
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",  
+                model="gpt-3.5-turbo",  # 또는 사용 가능한 모델
                 messages=[{"role": "system", "content": prompt}],
                 temperature=0.7,
                 max_tokens=1000
