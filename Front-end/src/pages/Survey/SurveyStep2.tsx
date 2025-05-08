@@ -1,6 +1,6 @@
 // src/pages/SurveyStep2.tsx
 import React from 'react';
-import './survey-step2.css';
+import '@/assets/styles/survey-step2.css';
 
 interface Props {
   data: {

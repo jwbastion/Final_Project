@@ -15,11 +15,13 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     // 로그인 처리 로직
     try {
-        const response = await axios.post('http://localhost:5000/login', { email, password });
-        if (response.data.success) {
+        const response = await axios.post('http://localhost:5000/api/login', { email, password });
+        if (response.status === 200) {
+          localStorage.setItem("email", email);  // 이후 설문 제출 등에서 필요
           alert('로그인 성공!');
           navigate('/survey');
         }
+        
       } catch (error) {
         alert('로그인 실패: 이메일 또는 비밀번호가 잘못되었습니다.');
       }

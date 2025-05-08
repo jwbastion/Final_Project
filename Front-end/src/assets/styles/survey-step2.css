@@ -1,0 +1,106 @@
+/* SurveyStep2 예쁜 스타일 개선 */
+.step2-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+  padding: 80px 24px;
+  background: #ebf2fa;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(25,118,210,0.15);
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: 80px;
+}
+
+.step2-container h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.info-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+}
+
+.info-card {
+  flex: 1;
+  min-width: 180px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(25,118,210,0.1);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.info-card:hover {
+  box-shadow: 0 8px 32px rgba(25,118,210,0.25);
+  transform: translateY(-4px);
+}
+
+.info-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.info-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #222;
+  word-break: break-word;
+}
+
+/* 버튼 그룹 */
+.step2-btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 40px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.step2-btn-group .btn {
+  flex: 1;
+  padding: 14px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step2-btn-group .btn-primary {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 16px rgba(25,118,210,0.3);
+}
+
+.step2-btn-group .btn-primary:hover {
+  background-color: #115293;
+  box-shadow: 0 8px 24px rgba(17,82,147,0.5);
+}
+
+.step2-btn-group .btn-secondary {
+  background-color: #fafbfc;
+  color: #1976d2;
+  border: none;
+  box-shadow: 0 4px 12px rgba(25,118,210,0.15);
+}
+
+.step2-btn-group .btn-secondary:hover {
+  background-color: #c5dbf9;
+  box-shadow: 0 6px 20px rgba(25,118,210,0.25);
+}
