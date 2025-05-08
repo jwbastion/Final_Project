@@ -26,23 +26,25 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="chatbot-container">
-      <div className="chatbox">
-        {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.sender}`}>
-            {msg.text}
-          </div>
-        ))}
+    <div className="chatbot-page-wrapper">
+      <div className="chatbot-container">
+        <div className="chatbox">
+          {messages.map((msg, index) => (
+            <div key={index} className={`message ${msg.sender}`}>
+              {msg.text}
+            </div>
+          ))}
+        </div>
+        <form className="chat-input-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="메시지를 입력하세요..."
+          />
+          <button type="submit">전송</button>
+        </form>
       </div>
-      <form className="chat-input-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="메시지를 입력하세요..."
-        />
-        <button type="submit">전송</button>
-      </form>
     </div>
-  );
+  );  
 }

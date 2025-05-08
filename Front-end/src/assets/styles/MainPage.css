@@ -2,67 +2,61 @@
 .main-page {
   font-family: 'Montserrat', 'Pretendard', sans-serif;
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  min-width: 0;
-}
-
-/* 헤더 */
-.header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #1976d2;
-  padding: 15px 30px;
-  color: white;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  box-sizing: border-box;
-}
-
-/* 로그아웃 버튼 */
-.auth-buttons button {
-  margin-left: 10px;
-  padding: 8px 16px;
-  background: white;
-  color: #1976d2;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-/* 본문 */
-.main-content {
-  display: flex;
   flex: 1;
+  min-height: 100vh; /* 전체 높이 확보 */
+  min-width: 0; /* 오버플로우 제어 */
 }
 
 /* 사이드바 */
 .sidebar {
   width: 200px;
-  background: #f2f2f2;
+  background: #1976d2;
   padding: 20px;
   border-right: 1px solid #ddd;
   font-weight: 500;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 사이드바가 항상 화면 아래까지 */
+  flex-shrink: 0; /* 수축 방지 */
 }
 
 .sidebar ul {
   list-style: none;
   padding: 0;
+  color: #fff;
+  margin: 0;
 }
 
 .sidebar li {
   margin-bottom: 20px;
+  color: #fff;
+}
+
+.sidebar a {
+  color: #fff;
+}
+
+/* 로고 영역 */
+.sidebar-logo {
+  font-family: 'Montserrat', 'Pretendard', sans-serif;
+  font-size: 1.5rem; /* 로고 크기 키움 */
+  font-weight: 700;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 48px; /* 메뉴와의 간격 넓힘 */
 }
 
 /* 메인 content */
 .content {
-  flex: 1;
-  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px; /* 섹션 간 간격 */
+  padding: 40px 32px;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* 타입 선택 버튼 */
@@ -133,15 +127,30 @@
 .section {
   background: #fff;
   padding: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 0;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .section-title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
+}
+
+/* 마지막 섹션은 아래 여백 제거 */
+.section:last-child {
+  margin-bottom: 0;
 }
 
 .card-grid {
@@ -164,20 +173,141 @@
   background: #f0f0f0;
 }
 
+.card-list {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+/* 매물 카드 */
+.listing-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  width: 230px;
+  padding: 28px 20px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative; /* X 버튼 위치 고정용 */
+  flex-shrink: 0; /* 수축 방지 */
+}
+.listing-card ul {
+  text-align: left;
+  width: 100%;
+}
+.listing-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+.listing-price {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+  text-align: center !important;
+}
+.listing-address {
+  font-size: 1.1rem;
+  color: #222;
+  margin-bottom: 14px;
+  text-align: center !important;
+}
+
 .center-button {
   text-align: center;
   margin-bottom: 30px;
 }
 
+/* 추천 버튼 스타일 */
 .recommend-button {
+  align-items: right;
   background: #1976d2;
   color: white;
-  padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
+  padding: 8px 18px;
+  font-size: 1rem;
   font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 .recommend-button:hover {
   background: #1250a6;
+}
+
+/* 삭제 버튼 스타일 */
+.remove-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  color: #aaa;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+  z-index: 2;
+}
+.remove-btn:hover {
+  color: #e53935;
+  background: #f8d7da;
+  border-radius: 50%;
+}
+
+.scroll-card-list {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden; /* 💡 세로 스크롤 막기 */
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #eee;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch; /* 💡 iOS 부드러운 스크롤 지원 */
+  max-width: 100%; /* 💡 부모 너비 초과 방지 */
+}
+
+
+/* 추천 결과 없음 */
+.no-result {
+  width: 100%;
+  min-width: 220px;
+  color: #888;
+  font-size: 1.1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 0;
+  text-align: center;
+}
+
+/* 카드 스타일 */
+.user-type-card {
+  background: #f9f9f9;
+  padding: 12px 32px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  min-width: 100px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0; /* 수축 방지 */
+}
+
+.user-type-card:hover {
+  background: #e3f2fd;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.12);
+}
+
+.listing-card {
+  cursor: pointer;
 }
