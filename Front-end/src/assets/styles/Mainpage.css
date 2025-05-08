@@ -166,6 +166,7 @@
   font-size: 1.2rem;
   color: #666;
   margin-right: 24px;
+  margin-left: 24px;
 }
 
 /* 빈 섹션 문구 */
@@ -174,6 +175,23 @@
   color: #868e96;
   text-align: center;
   padding: 20px 0;
+}
+
+.survey-restart-card {
+  background: linear-gradient(135deg, #ffd700, #ffb300); /* 노란색 그라데이션 */
+  color: #333;
+  font-weight: bold;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ff9800;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.survey-restart-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(255, 152, 0, 0.4);
 }
 
 .heart-icon {

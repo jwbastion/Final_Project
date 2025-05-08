@@ -53,7 +53,14 @@ def login():
     if email not in users or users[email]["password"] != password:
         return jsonify({"success": False, "message": "Invalid credentials"}), 401
 
-    return jsonify({"success": True})
+    return jsonify(
+        {
+            "success": True,
+            "email": email,
+            "password": users[email]["password"],
+            "nickname": users[email]["nickname"],
+        }
+    )
 
 
 @app.route("/api/survey", methods=["POST"])

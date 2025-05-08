@@ -21,8 +21,8 @@ function App() {
           <Route index element={<MainHome />} />
           <Route path="chatbot" element={<Chatbot />} />
           <Route path="/main/favorites" element={<FavoritesPage />} />
+          <Route path="/main/profile" element={<ProfilePage />} />
           </Route>
-        <Route path="/main/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );

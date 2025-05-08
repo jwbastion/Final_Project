@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/styles/MainPage.css';
 
@@ -66,6 +66,14 @@ const MainPage: React.FC = () => {
   const { pathname } = useLocation();
 
   const [favorites, setFavorites] = useState<string[]>([]); // 찜한 목록 저장
+  const [nickname, setNickname] = useState<string>('');
+
+  useEffect(() => {
+    const storedNickname = localStorage.getItem('nickname');
+    if (storedNickname) {
+      setNickname(storedNickname);
+    }
+  }, []);
 
   const sidebarMenus = [
     { label: '홈', path: '/main' },
@@ -98,7 +106,7 @@ const MainPage: React.FC = () => {
 
       {/* 오른쪽 페이지 교체 영역 */}
       <main className="mp-main">
-        <Outlet context={{favorites, setFavorites}}/>
+        <Outlet context={{favorites, setFavorites, nickname}}/>
       </main>
     </div>
   );

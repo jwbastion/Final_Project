@@ -1,7 +1,7 @@
 .chatbot-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh;
     padding: 40px;
     background: #f9fafb;
   }
@@ -15,16 +15,58 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 30px;
+    height: calc(100vh - 150px);
   }
   
+  .chatbot-message-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 24px;
+  }
+  
+  .chatbot-message-wrapper.user {
+    align-items: flex-end;
+    margin-right: 24px;
+  }
+  
+  .sender-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  
+  .sender-header span {
+    font-size: 1.2rem; /* 폰트 크기 키움 */
+    font-weight: 600;  /* 약간 볼드 처리 */
+    color: #222;       /* 짙은 검정색으로 선명하게 */
+  }
+
+  .sender-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .sender-icon2 {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
   .chatbot-message {
-    max-width: 60%;
+    max-width: 100%;
+    white-space: nowrap; /* 한 줄로 유지 */
+    overflow-x: auto; /* 넘치면 스크롤 */
     padding: 12px 16px;
     border-radius: 16px;
     font-size: 1rem;
     line-height: 1.5;
-    word-break: break-word;
+    word-break: keep-all;
   }
   
   .chatbot-message.user {
@@ -43,6 +85,9 @@
     display: flex;
     gap: 10px;
     margin-top: 16px;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
   }
   
   .chatbot-input-area input {
@@ -66,5 +111,12 @@
   
   .chatbot-input-area button:hover {
     background: #0d47a1;
+  }
+  
+  .sender-name {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #666;
   }
   
