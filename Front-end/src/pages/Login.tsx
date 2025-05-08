@@ -1,17 +1,18 @@
+import axios from 'axios';
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import sideImage from '../assets/images/ex4.gif'; // 이미지 경로
-import '../assets/styles/login.css';
+import { Link, useNavigate } from 'react-router-dom';
+import sideImage from '../assets/images/ex4.gif'; // 실제 이미지 경로
+import '../assets/styles/login.css'; // 경로를 실제 위치에 맞게 조정
 
-export default function LoginForm() {
-  const navigate = useNavigate();
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('로그인 정보:', { email, password });
-    navigate('/main/survey'); // survey 페이지 최종 버전 받으면 '/survey'로 변경
+    navigate('/survey');
   };
 
   return (
@@ -49,11 +50,13 @@ export default function LoginForm() {
             <button type="submit" className="btn btn-primary w-100">로그인</button>
           </form>
           <div className="text-center mt-3">
-            <span>Don't have an account? </span>
-            <Link to="/signup">Signup</Link>
+            Don't have an account? <Link to="/signup">Signup</Link>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;
+
