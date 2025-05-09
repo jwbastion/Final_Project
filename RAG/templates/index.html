@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>집업 - 부동산 매물 추천 챗봇</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4c6ef5;
+            --secondary-color: #f8f9fa;
+            --accent-color: #edf2ff;
+            --text-color: #495057;
+            --border-radius: 16px;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+        }
+        
+        .chat-container {
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #4c6ef5, #3b5bdb);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .chat-header h3 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .chat-messages {
+            height: 550px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #fbfbfd;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            border-radius: 18px;
+            max-width: 85%;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .bot-message.recommendation {
+            background-color: white;
+            border: 1px solid var(--accent-color);
+            border-radius: var(--border-radius);
+            max-width: 100%;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .recommendation-header {
+            background-color: var(--accent-color);
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .recommendation-body {
+            padding: 15px;
+        }
+        
+        .property-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .property-card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .property-image {
+            height: 160px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .property-header {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            font-weight: 500;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .property-header .score {
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .property-header .score i {
+            margin-right: 5px;
+        }
+        
+        .property-body {
+            padding: 15px;
+        }
+        
+        .property-address {
+            font-weight: 500;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            height: 40px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .property-station {
+            color: #495057;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .property-station i {
+            margin-right: 5px;
+        }
+        
+        .property-price {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #212529;
+        }
+        
+        .property-info {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 0.85em;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .property-info span {
+            margin-right: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .property-info span i {
+            margin-right: 5px;
+        }
+        
+        .property-details {
+            font-size: 0.85em;
+            color: #495057;
+            border-top: 1px solid #f1f3f5;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .property-details .col-6 {
+            margin-bottom: 5px;
+        }
+        
+        .property-details i {
+            width: 16px;
+            margin-right: 5px;
+            text-align: center;
+        }
+        
+        .property-infra {
+            margin-top: 10px;
+            border-top: 1px solid #f1f3f5;
+            padding-top: 10px;
+        }
+        
+        .infra-title {
+            font-size: 0.85em;
+            color: #868e96;
+            margin-bottom: 8px;
+        }
+        
+        .infra-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .infra-item {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #f1f3f5;
+            border-radius: 4px;
+            font-size: 0.75em;
+            color: #495057;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        .property-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .btn-property {
+            flex: 1;
+            font-size: 0.85em;
+            padding: 8px 0;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .btn-property:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-property i {
+            margin-right: 5px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #868e96;
+        }
+        
+        .no-results i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #ced4da;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 15px 20px;
+            background-color: white;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .chat-input input {
+            flex-grow: 1;
+            border: 1px solid #dee2e6;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+        
+        .chat-input button {
+            margin-left: 10px;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .chat-input button:hover {
+            background-color: #3b5bdb;
+            transform: scale(1.05);
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            color: #868e96;
+            font-style: italic;
+        }
+        
+        .choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .choice-btn {
+            background-color: white;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .choice-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .badge {
+            font-size: 0.7em;
+            font-weight: normal;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>집업 - 부동산 매물 추천 챗봇</h3>
+                <p>원하시는 조건을 알려주시면 최적의 매물을 추천해드립니다.</p>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">
+                    안녕하세요! 부동산 매물 추천 챗봇입니다. 😊<br><br>
+                    원하시는 조건에 맞는 최적의 매물을 찾아드릴게요.<br>
+                    먼저 예산 설정부터 시작할게요.<br><br>
+                    현재 설정된 월세는 최대 50만원이에요. 더 높이거나 낮추고 싶다면 금액을 입력해주세요.
+                    
+                    <div class="choices">
+                        <button class="choice-btn" onclick="sendChoice('50만원')">50만원 유지</button>
+                        <button class="choice-btn" onclick="sendChoice('40만원')">40만원</button>
+                        <button class="choice-btn" onclick="sendChoice('30만원')">30만원</button>
+                        <button class="choice-btn" onclick="sendChoice('없음')">없음</button>
+                    </div>
+                </div>
+            </div>
+            <div class="typing-indicator" id="typing-indicator">
+                <i class="fas fa-ellipsis-h"></i> 챗봇이 입력 중입니다...
+            </div>
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="메시지를 입력하세요..." class="form-control">
+                <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const typingIndicator = document.getElementById('typing-indicator');
+            
+            // SocketIO 연결
+            const socket = io();
+            
+            // 메시지 추가 함수
+            function addMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                
+                // 추천 매물 메시지인 경우 특별 처리
+                if (!isUser && message.includes('추천 매물입니다')) {
+                    messageDiv.className = 'message bot-message recommendation';
+                    
+                    // 헤더와 바디 분리
+                    const headerText = '추천 매물 결과';
+                    const bodyText = message;
+                    
+                    messageDiv.innerHTML = `
+                        <div class="recommendation-header">
+                            <i class="fas fa-home"></i> ${headerText}
+                        </div>
+                        <div class="recommendation-body">
+                            ${formatPropertyRecommendations(bodyText)}
+                        </div>
+                    `;
+                } else {
+                    // 일반 메시지 처리
+                    let formattedMessage = message.replace(/\n/g, '<br>');
+                    
+                    // 선택지 버튼 추가 (예: 숫자 목록이 있는 경우)
+                    if (!isUser && (formattedMessage.includes('1.') || formattedMessage.includes('번호를 입력'))) {
+                        formattedMessage = addChoiceButtons(formattedMessage);
+                    }
+                    
+                    messageDiv.innerHTML = formattedMessage;
+                }
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // 추천 매물 형식화 함수
+            function formatPropertyRecommendations(message) {
+                // 매물이 없는 경우 처리
+                if (message.includes('설정하신 조건에 맞는 매물을 찾지 못했습니다')) {
+                    return `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <p>설정하신 조건에 맞는 매물을 찾지 못했습니다.</p>
+                            <p>조건을 변경하여 다시 검색해보세요.</p>
+                            <div class="choices mt-3">
+                                <button class="choice-btn" onclick="sendChoice('예산을 올려줘')">예산 상향 조정</button>
+                                <button class="choice-btn" onclick="sendChoice('반경을 넓혀줘')">검색 반경 확장</button>
+                                <button class="choice-btn" onclick="sendChoice('기본 조건으로 검색해줘')">기본 조건으로 검색</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // 매물 정보를 파싱하고 카드 형태로 변환
+                const regex = /(\d+)\.\s*(.*?)(?=\d+\.|추천 매물에 대해|$)/gs;
+                const matches = [...message.matchAll(regex)];
+                
+                if (matches.length === 0) {
+                    return message.replace(/\n/g, '<br>');
+                }
+                
+                let html = '<div class="property-cards">';
+                let validPropertyCount = 0;
+                
+                matches.forEach(match => {
+                    const propertyNumber = match[1];
+                    const propertyInfo = match[2].trim();
+                    
+                    // 주소와 역 정보 추출
+                    const addressMatch = propertyInfo.match(/(.*?)\s*\((.*?)\)/);
+                    if (!addressMatch) return; // 주소 정보가 없으면 건너뜀
+                    
+                    const address = addressMatch[1];
+                    const station = addressMatch[2];
+                    
+                    // 방 타입 추출 (원룸, 투룸 등)
+                    const roomTypeMatch = propertyInfo.match(/\((.*?)\)\s*(.*?)$/);
+                    const roomType = roomTypeMatch ? roomTypeMatch[2] : '';
+                    
+                    // 가격 정보 추출
+                    const rentMatch = propertyInfo.match(/월세:\s*(\d+(?:\.\d+)?)/);
+                    const depositMatch = propertyInfo.match(/보증금:\s*(\d+(?:\.\d+)?)/);
+                    const maintMatch = propertyInfo.match(/관리비:\s*(\d+(?:\.\d+)?)/);
+                    
+                    if (!rentMatch || !depositMatch) return; // 필수 가격 정보가 없으면 건너뜀
+                    
+                    validPropertyCount++;
+                    
+                    // 소수점 제거 및 정수로 변환
+                    const rent = rentMatch ? parseInt(parseFloat(rentMatch[1])) : '?';
+                    const deposit = depositMatch ? parseInt(parseFloat(depositMatch[1])) : '?';
+                    const maint = maintMatch ? parseInt(parseFloat(maintMatch[1])) : '?';
+                    
+                    // 추가 정보 추출
+                    const floorMatch = propertyInfo.match(/층수:\s*(.*?)(?=,|$)/);
+                    const areaMatch = propertyInfo.match(/면적:\s*(.*?)(?=,|$)/);
+                    const directionMatch = propertyInfo.match(/방향:\s*(.*?)(?=,|$)/);
+                    const heatingMatch = propertyInfo.match(/난방:\s*(.*?)(?=,|$)/);
+                    const parkingMatch = propertyInfo.match(/주차:\s*(.*?)(?=,|$)/);
+                    const elevatorMatch = propertyInfo.match(/엘리베이터:\s*(.*?)(?=,|$)/);
+                    
+                    const floor = floorMatch ? floorMatch[1] : '정보 없음';
+                    const area = areaMatch ? areaMatch[1] : '정보 없음';
+                    const direction = directionMatch ? directionMatch[1] : '정보 없음';
+                    const heating = heatingMatch ? heatingMatch[1] : '정보 없음';
+                    const parking = parkingMatch ? parkingMatch[1] : '정보 없음';
+                    const elevator = elevatorMatch ? elevatorMatch[1] : '정보 없음';
+                    
+                    // 인프라 점수 추출
+                    const scoreMatch = propertyInfo.match(/인프라 점수:\s*([\d\.]+)/);
+                    const score = scoreMatch ? parseFloat(scoreMatch[1]).toFixed(1) : '?';
+                    
+                    // 이동 시간 정보 추출 및 소수점 제거
+                    const timeMatch = propertyInfo.match(/(도보|대중교통)\s*(\d+(?:\.\d+)?)/);
+                    let timeInfo = '';
+                    if (timeMatch) {
+                        const moveType = timeMatch[1];
+                        const minutes = parseInt(parseFloat(timeMatch[2]));
+                        timeInfo = `${moveType} ${minutes}분`;
+                    }
+                    
+                    // 인프라 정보 추출
+                    const infraSection = propertyInfo.match(/인프라 세부 정보:([\s\S]*?)(?=\n\n|$)/);
+                    const infraItems = infraSection ? 
+                        infraSection[1].match(/- (.*?)(?:\(거리: (\d+)m\))?/g) : [];
+                    
+                    let infraHTML = '';
+                    if (infraItems && infraItems.length > 0) {
+                        infraHTML = '<div class="property-infra"><div class="infra-title">주변 인프라</div><div class="infra-items">';
+                        infraItems.forEach(item => {
+                            const itemMatch = item.match(/- (.*?)(?:\(거리: (\d+)m\))?/);
+                            if (itemMatch) {
+                                const infraName = itemMatch[1].trim();
+                                const distance = itemMatch[2] ? parseInt(itemMatch[2]) : '';
+                                infraHTML += `<div class="infra-item">
+                                    <i class="fas fa-map-marker-alt"></i> ${infraName} ${distance ? `(${distance}m)` : ''}
+                                </div>`;
+                            }
+                        });
+                        infraHTML += '</div></div>';
+                    }
+                    
+                    // 랜덤 이미지 생성 (실제로는 데이터베이스에서 가져와야 함)
+                    const imgNumber = Math.floor(Math.random() * 5) + 1;
+                    
+                    html += `
+                    <div class="property-card">
+                        <div class="property-image">
+                            <img src="https://source.unsplash.com/random/300x200/?apartment&${imgNumber}" alt="매물 이미지">
+                        </div>
+                        <div class="property-header">
+                            <div>매물 ${propertyNumber}</div>
+                            <div class="score">
+                                <i class="fas fa-star"></i> ${score}
+                            </div>
+                        </div>
+                        <div class="property-body">
+                            <div class="property-address">${address}</div>
+                            <div class="property-station">
+                                <i class="fas fa-subway"></i> ${station} ${roomType ? `<span class="badge bg-primary ms-2">${roomType}</span>` : ''}
+                            </div>
+                            <div class="property-price">
+                                월세 ${rent}만원 / 보증금 ${deposit}만원
+                            </div>
+                            <div class="property-info">
+                                <span><i class="fas fa-coins"></i> 관리비 ${maint}만원</span>
+                                ${timeInfo ? `<span><i class="fas fa-walking"></i> ${timeInfo}</span>` : ''}
+                            </div>
+                            <div class="property-details mt-2">
+                                <div class="row g-2">
+                                    <div class="col-6"><small><i class="fas fa-building"></i> ${floor}</small></div>
+                                    <div class="col-6"><small><i class="fas fa-vector-square"></i> ${area}</small></div>
+                                    <div class="col-6"><small><i class="fas fa-compass"></i> ${direction}</small></div>
+                                    <div class="col-6"><small><i class="fas fa-fire"></i> ${heating}</small></div>
+                                    <div class="col-6"><small><i class="fas fa-car"></i> ${parking}</small></div>
+                                    <div class="col-6"><small><i class="fas fa-elevator"></i> ${elevator}</small></div>
+                                </div>
+                            </div>
+                            ${infraHTML}
+                            <div class="property-actions">
+                                <button class="btn btn-property" onclick="sendChoice('${propertyNumber}번 매물에 대해 자세히 알려줘')">
+                                    <i class="fas fa-info-circle"></i> 상세정보
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
+                
+                html += '</div>';
+                
+                // 유효한 매물이 없는 경우 처리
+                if (validPropertyCount === 0) {
+                    return `
+                        <div class="no-results">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>표시할 수 있는 매물이 없습니다.</p>
+                            <p>다른 조건으로 검색해보세요.</p>
+                            <div class="choices mt-3">
+                                <button class="choice-btn" onclick="sendChoice('예산을 올려줘')">예산 상향 조정</button>
+                                <button class="choice-btn" onclick="sendChoice('반경을 넓혀줘')">검색 반경 확장</button>
+                                <button class="choice-btn" onclick="sendChoice('기본 조건으로 검색해줘')">기본 조건으로 검색</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                const footer = message.match(/추천 매물에 대해[\s\S]*$/);
+                if (footer) {
+                    html += `<div class="mt-3">${footer[0].replace(/\n/g, '<br>')}</div>`;
+                }
+                
+                return html;
+            }
+            
+            // 선택지 버튼 추가 함수
+            function addChoiceButtons(message) {
+                // 아이템 항목 추출 (1. 항목 형태)
+                const itemRegex = /(\d+)\.\s*(.*?)(?=\d+\.|$)/g;
+                const items = [...message.matchAll(itemRegex)];
+                
+                if (items.length === 0) {
+                    return message;
+                }
+                
+                // 선택지 버튼 HTML 생성
+                let choicesHTML = '<div class="choices">';
+                items.forEach(item => {
+                    const number = item[1];
+                    const text = item[2].trim();
+                    choicesHTML += `<button class="choice-btn" onclick="sendChoice('${number}')">${number}. ${text}</button>`;
+                });
+                choicesHTML += '</div>';
+                
+                // 메시지에 선택지 버튼 추가
+                return message + choicesHTML;
+            }
+            
+            // 선택지 전송 함수
+            window.sendChoice = function(choice) {
+                addMessage(choice, true);
+                sendMessageToServer(choice);
+            };
+            
+            // 메시지 전송 함수
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (!message) return;
+                
+                // 사용자 메시지 표시
+                addMessage(message, true);
+                userInput.value = '';
+                
+                sendMessageToServer(message);
+            }
+            
+            // 서버에 메시지 전송
+            function sendMessageToServer(message) {
+                // 입력 중 표시
+                typingIndicator.style.display = 'block';
+                
+                // API 호출
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // 입력 중 숨기기
+                    typingIndicator.style.display = 'none';
+                    // 봇 응답 표시
+                    addMessage(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    typingIndicator.style.display = 'none';
+                    addMessage('오류가 발생했습니다. 다시 시도해주세요.');
+                });
+            }
+            
+            // 전송 버튼 클릭 이벤트
+            sendButton.addEventListener('click', sendMessage);
+            
+            // 엔터 키 이벤트
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // 소켓 이벤트 처리
+            socket.on('connect', function() {
+                console.log('Connected to server');
+            });
+            
+            socket.on('disconnect', function() {
+                console.log('Disconnected from server');
+            });
+        });
+    </script>
+</body>
+</html>
