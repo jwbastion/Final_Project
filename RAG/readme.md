@@ -1,3 +1,4 @@
+```plaintext
 chatbot/
 ├── app.py                 # Flask 애플리케이션 진입점
 ├── config.py              # 환경 설정 및 상수
