@@ -12,6 +12,11 @@ interface Props{
   onNext: () => void;
 }
 
+const extractNumericValue = (str: string): string => {
+  const match = str.match(/\d+/);
+  return match ? match[0] : "0";
+};
+
 const SurveyStep3: React.FC<Props> = ({data, onNext}) => {
   const [monthlyRent, setMonthlyRent] = useState<string>('');
   const [deposit, setDeposit] = useState<string>('');
@@ -40,30 +45,12 @@ const SurveyStep3: React.FC<Props> = ({data, onNext}) => {
   const isFinishEnabled =
     monthlyRent !== '' && deposit !== '' && maintenanceFee !== '';
   
-  const handleFinish = async () => {
-    const payload = {
-      searchPlace: data.query,
-      address:     data.address,
-      lat:         data.lat,
-      lng:         data.lng,
-      monthlyRent,
-      deposit,
-      maintenanceFee,
-    };
-
-    try {
-      const res = await fetch('http://localhost:5000/api/survey', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error('서버 오류');
-      // 저장 성공 시 다음 단계로
-      onNext();
-    } catch (err) {
-      console.error(err);
-      alert('서버 저장에 실패했습니다. 다시 시도해주세요.');
-    }
+  const handleFinish = () => {
+    localStorage.setItem("preferred_area", data.query);
+    localStorage.setItem("budget", extractNumericValue(deposit));
+    localStorage.setItem("monthly", extractNumericValue(monthlyRent));
+    localStorage.setItem("maintenance_fee", extractNumericValue(maintenanceFee));
+    onNext();
   };
 
   return (
