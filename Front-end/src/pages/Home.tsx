@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+
   const handleAdd = (e: React.MouseEvent, idx: number) => {
     // 실제 관심목록 추가 로직 구현
     e.stopPropagation(); // 카드 클릭 이벤트 방지
     alert(`관심목록에 추가했습니다.`);
   };
+
+  // 카드 클릭 시 모달 오픈
+  const handleCardClick = (idx: number) => {
+    setSelectedIdx(idx);
+    setModalOpen(true);
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedIdx(null);
+  };
+  
   const navigate = useNavigate();
 
   type Listing = {
@@ -111,8 +127,8 @@ export default function Home() {
               className="listing-card"
               key={idx}
               tabIndex={0}
-              onClick={() => navigate(`/listing/${idx}`)}
-              style={{ cursor: 'pointer' }}
+              onClick={() => handleCardClick(idx)}
+              style={{ cursor: 'pointer', position: 'relative' }}
             >
               <button
               className="remove-btn"
@@ -129,6 +145,54 @@ export default function Home() {
               </div>
             </div>
           ))
+        )}
+
+        {/* 모달 구현 */}
+        {modalOpen && selectedIdx !== null && (
+          <div
+            className="modal-overlay"
+            style={{
+              position: 'fixed',
+              top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000
+            }}
+            onClick={handleCloseModal}
+          >
+            <div
+              className="modal-content"
+              style={{
+                background: '#fff',
+                padding: '32px 40px',
+                borderRadius: '12px',
+                minWidth: '280px',
+                textAlign: 'center',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                position: 'relative'
+              }}
+              onClick={e => e.stopPropagation()} // 모달 내부 클릭 시 닫기 방지
+            >
+              <button
+                onClick={handleCloseModal}
+                style={{
+                  position: 'absolute',
+                  top: 12,
+                  right: 16,
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  color: '#888',
+                  cursor: 'pointer'
+                }}
+              >×</button>
+              <div style={{ fontSize: '1.1rem', fontWeight: 500 }}>
+                준비중입니다
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
