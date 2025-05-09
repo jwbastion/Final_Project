@@ -106,5 +106,32 @@
     "monthlyRent": "30~50만원",
     "deposit": "500~1,000만원",
     "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "창동역",
+    "address": "서울 도봉구 마들로11길 77",
+    "lat": 37.6531817,
+    "lng": 127.0476987,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "상하이",
+    "address": "상하이 ",
+    "lat": 31.2323437,
+    "lng": 121.4691024,
+    "monthlyRent": "90~100만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
+  },
+  {
+    "searchPlace": "튀르키예",
+    "address": " ",
+    "lat": 38.9597594,
+    "lng": 34.9249653,
+    "monthlyRent": "30~50만원",
+    "deposit": "500~1,000만원",
+    "maintenanceFee": "5~10만원"
   }
 ]
