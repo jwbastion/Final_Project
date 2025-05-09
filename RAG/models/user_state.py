@@ -1,6 +1,8 @@
 import time
 
 class UserState:
+    """사용자 상태 관리 클래스"""
+    
     def __init__(self):
         # 초기 설정 (기본값)
         self.state = {
@@ -14,18 +16,19 @@ class UserState:
             "deposit": 1000,
             "maint": 30,
             "infra_preferences": {},
-            "infra_details": {},
-            "property_features": {},
+            "infra_details": {},  # 인프라 세부 정보 저장
+            "property_features": {},  # 매물 특성 저장
             "chat_history": []
         }
     
     def update(self, key, value):
         """상태 업데이트"""
         if key.startswith("infra_detail_"):
-            parts = key.split("_", 3)
+            parts = key.split("_", 3)  # infra_detail_traffic_subway_0 -> ['infra', 'detail', 'traffic', 'subway_0']
             
             if len(parts) >= 4:
-                infra_type = parts[2] + "_" + parts[3].split("_")[0]
+                # 인프라 타입 (traffic_subway)과 질문 인덱스(0) 추출
+                infra_type = parts[2] + "_" + parts[3].split("_")[0]  # traffic_subway
                 
                 try:
                     question_idx = int(parts[3].split("_")[1]) if "_" in parts[3] else 0
@@ -39,6 +42,7 @@ class UserState:
                 
                 self.state["infra_details"][infra_type][question_idx] = value
             else:
+                # 형식이 맞지 않으면 그냥 저장
                 self.state[key] = value
         elif key.startswith("feature_"):
             feature_code = key.split("_")[1]

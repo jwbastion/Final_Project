@@ -1,6 +1,10 @@
+from openai import OpenAI
+
 class LLMProcessor:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, api_key, model="gpt-3.5-turbo"):
+        """OpenAI 클라이언트 초기화"""
+        self.client = OpenAI(api_key=api_key)
+        self.model = model
     
     def generate_response(self, user_message, context, chat_history):
         """LLM을 사용하여 응답 생성"""
@@ -81,7 +85,7 @@ class LLMProcessor:
         try:
             # LLM 호출
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",  # 또는 사용 가능한 모델
+                model=self.model,
                 messages=[{"role": "system", "content": prompt}],
                 temperature=0.7,
                 max_tokens=1000

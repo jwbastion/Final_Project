@@ -1,14 +1,11 @@
-from models import UserState
-from llm_processor import LLMProcessor
-from recommender import RealEstateRecommender
-from database import InfraDataAccessor
+from models.user_state import UserState
+from services.recommender import RealEstateRecommender
 
 class RealEstateChatbot:
-    def __init__(self, client, index, db_config):
+    def __init__(self, vector_service, data_accessor, llm_processor):
         self.user_state = UserState()
-        self.data_accessor = InfraDataAccessor(db_config)
-        self.recommender = RealEstateRecommender(index, self.user_state, self.data_accessor)
-        self.llm = LLMProcessor(client)
+        self.recommender = RealEstateRecommender(vector_service, self.user_state, data_accessor)
+        self.llm = llm_processor
         self.setup_complete = False
     
     def process_message(self, user_message):
