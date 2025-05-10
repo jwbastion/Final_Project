@@ -80,6 +80,9 @@ const SurveyStep1: React.FC<Props> = ({ onNext }) => {
   const handleSelect = () => {
     if (!position) return;
     const [lat, lng] = position;
+    localStorage.setItem("address", address);
+    localStorage.setItem("area_x", lat.toFixed(6));  // 위도
+    localStorage.setItem("area_y", lng.toFixed(6)); 
     onNext({ query, address, lat, lng });
   };
 

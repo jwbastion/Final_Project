@@ -12,8 +12,12 @@ const SurveyStep4: React.FC = () => {
     const monthly = localStorage.getItem("monthly");
     const maintenance_fee = localStorage.getItem("maintenance_fee");
 
+    const address = localStorage.getItem("address");              // 📍추가
+    const area_x = localStorage.getItem("area_x");                // 📍추가
+    const area_y = localStorage.getItem("area_y"); 
+
     const submitSurvey = async () => {
-      console.log("📤 보낼 설문 데이터:", { email, preferred_area, budget, monthly, maintenance_fee });
+      console.log("📤 보낼 설문 데이터:", { email, preferred_area, budget, monthly, maintenance_fee, address, area_x, area_y });
 
       try {
         const response = await fetch("http://localhost:5000/api/survey", {
@@ -24,7 +28,10 @@ const SurveyStep4: React.FC = () => {
             preferred_area,
             budget: budget ? parseInt(budget) : null,
             monthly: monthly ? parseInt(monthly) : null,
-            maintenance_fee: maintenance_fee ? parseInt(maintenance_fee) : null
+            maintenance_fee: maintenance_fee ? parseInt(maintenance_fee) : null,
+            address,                                // 📍추가
+            area_x: area_x ? parseFloat(area_x) : null,  // 📍추가
+            area_y: area_y ? parseFloat(area_y) : null 
           })
         });
 

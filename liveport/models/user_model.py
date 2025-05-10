@@ -17,3 +17,7 @@ class Users(db.Model):
     monthly = db.Column(db.Integer, nullable=True)
     maintenance_fee = db.Column(db.Integer, nullable=True)
     preferred_area = db.Column(db.String(100), nullable=True)
+    area_x = db.Column(db.Float, nullable=True)  # 위도
+    area_y = db.Column(db.Float, nullable=True)  # 경도
+    address = db.Column(db.String(256), nullable=True)  # 주소
+

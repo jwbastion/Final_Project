@@ -43,6 +43,9 @@ def save_survey():
     budget = data.get('budget')  # 보증금
     monthly = data.get('monthly')  # 월세
     maintenance_fee = data.get('maintenance_fee')
+    address = data.get('address')          # 추가
+    area_x = data.get('area_x')            # 위도
+    area_y = data.get('area_y') 
 
     user = Users.query.filter_by(email=email).first()
     if not user:
@@ -52,6 +55,9 @@ def save_survey():
     user.budget = budget
     user.monthly = monthly
     user.maintenance_fee = maintenance_fee
+    user.address = address                 # 추가
+    user.area_x = area_x                   # 추가
+    user.area_y = area_y  
 
     db.session.commit()
     return jsonify({'message': '설문 결과 저장 완료'}), 200
@@ -71,5 +77,8 @@ def get_latest_survey():
         'preferred_area': user.preferred_area,
         'budget': user.budget,
         'monthly': user.monthly,
-        'maintenance_fee': user.maintenance_fee
+        'maintenance_fee': user.maintenance_fee,
+        'address': user.address,           # 추가
+        'area_x': user.area_x,             # 추가
+        'area_y': user.area_y 
     }), 200
