@@ -17,6 +17,12 @@ const extractNumericValue = (str: string): string => {
   return match ? match[0] : "0";
 };
 
+const extractCityDistrict = (address: string): string => {
+  // 시/도 + 시/군/구 추출
+  const match = address.match(/^([가-힣]+[시도])\s([가-힣]+(?:시|군|구))/);
+  return match ? `${match[1]} ${match[2]}` : '';
+};
+
 const SurveyStep3: React.FC<Props> = ({data, onNext}) => {
   const [monthlyRent, setMonthlyRent] = useState<string>('');
   const [deposit, setDeposit] = useState<string>('');
@@ -47,6 +53,9 @@ const SurveyStep3: React.FC<Props> = ({data, onNext}) => {
   
   const handleFinish = () => {
     localStorage.setItem("preferred_area", data.query);
+    localStorage.setItem("address", extractCityDistrict(data.address));
+    localStorage.setItem("area_x", '${data.lat}');
+    localStorage.setItem("area_y", '${data.lng}');
     localStorage.setItem("budget", extractNumericValue(deposit));
     localStorage.setItem("monthly", extractNumericValue(monthlyRent));
     localStorage.setItem("maintenance_fee", extractNumericValue(maintenanceFee));

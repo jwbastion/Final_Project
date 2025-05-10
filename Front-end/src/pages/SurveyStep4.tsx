@@ -8,12 +8,15 @@ const SurveyStep4: React.FC = () => {
   useEffect(() => {
     const email = localStorage.getItem("email");
     const preferred_area = localStorage.getItem("preferred_area");
+    const latitude = localStorage.getItem("area_x")
+    const longitude = localStorage.getItem("area_y")
+    const address = localStorage.getItem("address")
     const budget = localStorage.getItem("budget");
     const monthly = localStorage.getItem("monthly");
     const maintenance_fee = localStorage.getItem("maintenance_fee");
 
     const submitSurvey = async () => {
-      console.log("📤 보낼 설문 데이터:", { email, preferred_area, budget, monthly, maintenance_fee });
+      console.log("📤 보낼 설문 데이터:", { email, preferred_area, latitude, longitude, address, budget, monthly, maintenance_fee });
 
       try {
         const response = await fetch("http://localhost:5000/api/survey", {
@@ -22,6 +25,9 @@ const SurveyStep4: React.FC = () => {
           body: JSON.stringify({
             email,
             preferred_area,
+            latitude: budget ? Number(latitude) : null,
+            longitude: budget ? Number(longitude) : null,
+            address,
             budget: budget ? parseInt(budget) : null,
             monthly: monthly ? parseInt(monthly) : null,
             maintenance_fee: maintenance_fee ? parseInt(maintenance_fee) : null

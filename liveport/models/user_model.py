@@ -18,3 +18,6 @@ class Users(db.Model):
     monthly = db.Column(db.Integer, nullable=True)
     maintenance_fee = db.Column(db.Integer, nullable=True)
     preferred_area = db.Column(db.String(100), nullable=True)
+    area_x = db.Column(db.Float, nullable=True)
+    area_y = db.Column(db.Float, nullable=True)
+    address = db.Column(db.String(100), nullable=True)
