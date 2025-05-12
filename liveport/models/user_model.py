@@ -6,7 +6,7 @@ db = SQLAlchemy()
 
 class Users(db.Model):
     __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True)
+    user_uuid = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
     nickname = db.Column(db.String(100), nullable=True)
@@ -18,6 +18,6 @@ class Users(db.Model):
     monthly = db.Column(db.Integer, nullable=True)
     maintenance_fee = db.Column(db.Integer, nullable=True)
     preferred_area = db.Column(db.String(100), nullable=True)
-    area_x = db.Column(db.Float, nullable=True)
-    area_y = db.Column(db.Float, nullable=True)
+    latitude = db.Column(db.Float, nullable=True)
+    longitude = db.Column(db.Float, nullable=True)
     address = db.Column(db.String(100), nullable=True)

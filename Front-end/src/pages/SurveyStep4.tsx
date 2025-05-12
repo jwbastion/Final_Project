@@ -8,8 +8,8 @@ const SurveyStep4: React.FC = () => {
   useEffect(() => {
     const email = localStorage.getItem("email");
     const preferred_area = localStorage.getItem("preferred_area");
-    const latitude = localStorage.getItem("area_x")
-    const longitude = localStorage.getItem("area_y")
+    const latitude = localStorage.getItem("latitude")
+    const longitude = localStorage.getItem("longitude")
     const address = localStorage.getItem("address")
     const budget = localStorage.getItem("budget");
     const monthly = localStorage.getItem("monthly");
@@ -25,8 +25,8 @@ const SurveyStep4: React.FC = () => {
           body: JSON.stringify({
             email,
             preferred_area,
-            latitude: budget ? Number(latitude) : null,
-            longitude: budget ? Number(longitude) : null,
+            latitude: latitude ? parseFloat(latitude) : null,
+            longitude: longitude ? parseFloat(longitude) : null,
             address,
             budget: budget ? parseInt(budget) : null,
             monthly: monthly ? parseInt(monthly) : null,

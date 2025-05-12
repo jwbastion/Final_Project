@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import '../assets/styles/Profile.css';
 
 interface SurveyData {
-  searchPlace: string;
+  preferred_area: string;
   address: string;
-  lat: number;
-  lng: number;
-  monthlyRent: string;
-  deposit: string;
-  maintenanceFee: string;
+  latitude: number;
+  longitude: number;
+  monthly: string;
+  budget: string;
+  maintenance_fee: string;
 }
 
 const ProfilePage: React.FC = () => {
@@ -31,7 +31,7 @@ const ProfilePage: React.FC = () => {
     setProfileImage(storedProfileImage);
 
     // 설문조사 정보 불러오기
-    fetch('http://localhost:5000/api/survey/latest')
+    fetch(`http://localhost:5000/api/survey/latest?email=${storedEmail}`)
       .then(res => res.ok ? res.json() : Promise.reject())
       .then((data: SurveyData) => setSurvey(data))
       .catch(console.error);
@@ -89,13 +89,13 @@ const ProfilePage: React.FC = () => {
             <span className="label">설문조사 내용</span>
             {survey ? (
               <ul className="survey-list">
-                <li>검색장소: {survey.searchPlace}</li>
+                <li>검색장소: {survey.preferred_area}</li>
                 <li>주소: {survey.address}</li>
-                <li>위도: {survey.lat}</li>
-                <li>경도: {survey.lng}</li>
-                <li>월세: {survey.monthlyRent}</li>
-                <li>보증금: {survey.deposit}</li>
-                <li>관리비: {survey.maintenanceFee}</li>
+                <li>위도: {survey.latitude}</li>
+                <li>경도: {survey.longitude}</li>
+                <li>월세: {survey.monthly}만원</li>
+                <li>보증금: {survey.budget}만원</li>
+                <li>관리비: {survey.maintenance_fee}만원</li>
               </ul>
             ) : (
               <span>설문조사 기록이 없습니다.</span>

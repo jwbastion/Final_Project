@@ -29,7 +29,6 @@ def login():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
-    nickname = data.get("nickname")
 
     user = verify_user(email, password)
     if user:
@@ -39,7 +38,7 @@ def login():
                     "message": "로그인 성공",
                     "email": email,
                     "password": password,
-                    "nickname": nickname,
+                    "nickname": user.nickname,
                 }
             ),
             200,
@@ -58,8 +57,8 @@ def save_survey():
     budget = data.get("budget")  # 보증금
     monthly = data.get("monthly")  # 월세
     maintenance_fee = data.get("maintenance_fee")
-    latitude = data.get("area_x")
-    longitude = data.get("area_y")
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
     address = data.get("address")
 
     user = Users.query.filter_by(email=email).first()
@@ -70,8 +69,8 @@ def save_survey():
     user.budget = budget
     user.monthly = monthly
     user.maintenance_fee = maintenance_fee
-    user.area_x = latitude
-    user.area_y = longitude
+    user.latitude = latitude
+    user.longitude = longitude
     user.address = address
 
     db.session.commit()
@@ -92,7 +91,11 @@ def get_latest_survey():
     return (
         jsonify(
             {
+                "nickname": user.nickname,
                 "preferred_area": user.preferred_area,
+                "address": user.address,
+                "latitude": user.latitude,
+                "longitude": user.longitude,
                 "budget": user.budget,
                 "monthly": user.monthly,
                 "maintenance_fee": user.maintenance_fee,

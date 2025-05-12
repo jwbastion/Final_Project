@@ -12,14 +12,20 @@ interface Props{
   onNext: () => void;
 }
 
-const extractNumericValue = (str: string): string => {
-  const match = str.match(/\d+/);
-  return match ? match[0] : "0";
+const extractNumericValue = (str: string): number => {
+  if (str.includes("상관없음")) return 0;
+
+  // 모든 숫자 추출 (쉼표 제거 후)
+  const numbers = str.replace(/,/g, "").match(/\d+/g);
+  if (!numbers || numbers.length === 0) return 0;
+
+  const parsedNumbers = numbers.map(num => parseInt(num, 10));
+  return Math.max(...parsedNumbers); // 첫 번째 숫자만
 };
 
 const extractCityDistrict = (address: string): string => {
   // 시/도 + 시/군/구 추출
-  const match = address.match(/^([가-힣]+[시도])\s([가-힣]+(?:시|군|구))/);
+  const match = address.match(/^([가-힣]+)\s([가-힣]+(?:시|군|구))/);
   return match ? `${match[1]} ${match[2]}` : '';
 };
 
@@ -54,11 +60,11 @@ const SurveyStep3: React.FC<Props> = ({data, onNext}) => {
   const handleFinish = () => {
     localStorage.setItem("preferred_area", data.query);
     localStorage.setItem("address", extractCityDistrict(data.address));
-    localStorage.setItem("area_x", '${data.lat}');
-    localStorage.setItem("area_y", '${data.lng}');
-    localStorage.setItem("budget", extractNumericValue(deposit));
-    localStorage.setItem("monthly", extractNumericValue(monthlyRent));
-    localStorage.setItem("maintenance_fee", extractNumericValue(maintenanceFee));
+    localStorage.setItem("latitude", `${data.lat}`);
+    localStorage.setItem("longitude", `${data.lng}`);
+    localStorage.setItem("budget", extractNumericValue(deposit).toString());
+    localStorage.setItem("monthly", extractNumericValue(monthlyRent).toString());
+    localStorage.setItem("maintenance_fee", extractNumericValue(maintenanceFee).toString());
     onNext();
   };
 

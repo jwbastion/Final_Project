@@ -10,13 +10,14 @@ interface SectionProps {
 interface OutletContextType {
   favorites: string[];
   setFavorites: React.Dispatch<React.SetStateAction<string[]>>;
-  nickname: string;
 }
 
 const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
   const navigate = useNavigate();
   const trackRef = useRef<HTMLDivElement>(null);
-  const { favorites, setFavorites, nickname } = useOutletContext<OutletContextType>();
+  const { favorites, setFavorites } = useOutletContext<OutletContextType>();
+
+  const nickname = localStorage.getItem("nickname") || "사용자";
 
   const scrollByCard = (dir: 'left' | 'right') => {
     if (!trackRef.current) return;
@@ -42,7 +43,7 @@ const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
 
       <div className="mp-carousel">
         <button className="carousel-arrow left" onClick={() => scrollByCard('left')}>
-          <svg viewBox="0 0 24 24" width="24" height="24">
+          <svg viewBox="0 0 24 24" width="30" height="30">
             <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
           </svg>
         </button>
@@ -87,7 +88,7 @@ const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
         </div>
 
         <button className="carousel-arrow right" onClick={() => scrollByCard('right')}>
-          <svg viewBox="0 0 24 24" width="24" height="24">
+          <svg viewBox="0 0 24 24" width="30" height="30">
             <path fill="currentColor" d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
           </svg>
         </button>

@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Section from './Section'; // 새로 만든 Section.tsx import
 
 interface SurveyData {
-  searchPlace: string;
+  email: string;
+  nickname: string;
+  preferred_area: string;
   address: string;
-  lat: number;
-  lng: number;
-  monthlyRent: string;
-  deposit: string;
-  maintenanceFee: string;
+  latitude: number;
+  longitude: number;
+  monthly: number;
+  budget: number;
+  maintenance_fee: number;
 }
 
 
@@ -16,21 +18,23 @@ const MainHome: React.FC = () => {
   const [survey, setSurvey] = useState<SurveyData | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/survey/latest')
-      .then(res => res.ok ? res.json() : Promise.reject())
+    const email = localStorage.getItem('email');
+    fetch(`http://localhost:5000/api/survey/latest?email=${email}`)
+      .then(res => res.ok ? res.json() : Promise.reject("서버 오류"))
       .then((data: SurveyData) => setSurvey(data))
       .catch(console.error);
   }, []);
 
   const surveyItems = survey
     ? [
-        `검색장소: ${survey.searchPlace}`,
-        `주소: ${survey.address}`,
-        `위도: ${survey.lat}`,
-        `경도: ${survey.lng}`,
-        `월세: ${survey.monthlyRent}`,
-        `보증금: ${survey.deposit}`,
-        `관리비: ${survey.maintenanceFee}`,
+        `검색 장소: ${survey.preferred_area}`,
+        `${survey.address}`,
+        <>
+        위도: {survey.latitude} <br /> 경도: {survey.longitude}
+        </>,
+        `월세: ${survey.monthly}만원`,
+        `보증금: ${survey.budget}만원`,
+        `관리비: ${survey.maintenance_fee}만원`,
       ]
     : [];
 
