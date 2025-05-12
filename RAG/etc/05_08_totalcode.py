@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from pinecone import Pinecone
 from openai import OpenAI
 import time
+import sys
 
 # 환경 변수 로드
 load_dotenv()
@@ -36,6 +37,7 @@ infra_types = [
     {"code": "life_cafe", "name": "카페", "description": "휴식 및 업무 공간"},
     {"code": "life_park", "name": "공원", "description": "여가 및 산책 공간"},
     {"code": "life_post_office", "name": "우체국", "description": "우편 및 행정 서비스"},
+    {"code": "life_healthjang", "name": "헬스장", "description": "건강 관리 및 운동 시설"},
     {"code": "health_hospital", "name": "병원", "description": "의료 서비스"},
     {"code": "health_pharmacy", "name": "약국", "description": "의약품 구매"},
     {"code": "play_cinema", "name": "영화관", "description": "문화 및 엔터테인먼트"},
@@ -56,6 +58,7 @@ infra_detail_questions = {
     "life_cafe": ["선호하는 카페 브랜드(스타벅스·이디야·개인카페 등)가 있으신가요?", "카페까지 도보 몇 분 이내가 편하신가요?"],
     "life_park": ["특정 공원(예: 올림픽공원, 한강공원)을 선호하시나요?", "공원까지 도보 몇 분 이내를 원하시나요?"],
     "life_post_office": ["우체국까지 도보 몇 분 이내를 원하시나요?"],
+    "life_healthjang": ["주로 이용하시는 운동 종류(헬스, 수영, 요가 등)가 있으신가요?", "24시간 운영하는 시설이 필요하신가요?", "PT나 그룹 수업이 있는 곳을 선호하시나요?"],
     "health_hospital": ["내과·치과·소아과 등 특정 과목을 제공하는 병원이 필요하신가요?", "병원까지 도보 몇 분 이내를 선호하시나요?"],
     "health_pharmacy": ["선호하는 약국 체인(예: 서울약국, 우리약국 등)이 있나요?", "약국까지 도보 몇 분 이내를 원하시나요?"],
     "play_cinema": ["선호하는 영화관 체인(CGV·메가박스·롯데시네마 등)이 있나요?", "IMAX·4DX 같은 특수관을 원하시나요?", "영화관까지 도보 몇 분 이내를 원하시나요?"],
@@ -233,6 +236,7 @@ class InfraDataAccessor:
             "life_daiso":              "SELECT business_name AS name, longitude, latitude FROM life_daiso",
             "life_department_store":   "SELECT business_name AS name, longitude, latitude FROM life_department_store",
             "life_post_office":        "SELECT business_name AS name, longitude, latitude FROM life_post_office",
+            "life_healthjang":         "SELECT business_name AS name, longitude, latitude FROM life_healthjang",
 
             # 의료
             "health_hospital": "SELECT business_name AS name, longitude, latitude FROM health_hospital",
@@ -882,94 +886,96 @@ def main():
                 setup_stage = "location"
                 continue
         
-        # 위치 선호도 설정 단계
-        elif setup_stage == "location":
-            if current_key == 'service':
-                service_map = {
-                    "1": "소요시간", "소요시간": "소요시간", 
-                    "2": "반경", "반경": "반경",
-                    "3": "상관없음", "상관없음": "상관없음"
-                }
-                
-                service = service_map.get(user_input.lower(), "소요시간")
-                chatbot.user_state.update("service", service)
-                
-                # 사용자 입력 처리 후 응답 및 요약
-                print(f"\n🤖 챗봇: {service} 기준으로 설정했습니다.")
-                print_summary(chatbot)
-                
-                if service == "소요시간":
-                    print("\n🤖 챗봇: 이동 방법? 1.도보 2.대중교통 3.상관없음")
-                    current_key = 'movement'
-                
-                elif service == "반경":
-                    print("\n🤖 챗봇: 반경(m)을 입력하세요")
-                    current_key = 'radius'
-                
-                else:  # 상관없음
-                    chatbot.user_state.update("movement", "상관없음")
-                    setup_stage = "infra"  # 인프라 선호도 조사로 넘어감
-                    print("\n🤖 챗봇: 다음 중에서 가장 중요하게 생각하는 인프라를 최소 1개, 최대 3개까지 선택해주세요.")
-                    for i, infra in enumerate(infra_types, 1):
-                        print(f"{i}. {infra['name']} - {infra['description']}")
-                    print("\n번호를 입력해주세요 (예: 1,3,5 또는 1 3 5)")
-                continue
+            elif setup_stage == "location":
+                if current_key == 'service':
+                    # 부분 문자열 검사로 더 유연하게 처리
+                    ui = user_input.strip().lower()
+                    if "소요" in ui or ui == "1":
+                        service = "소요시간"
+                    elif "반경" in ui or ui == "2" or "반경" in ui:  # "반경이요"도 인식하도록 수정
+                        service = "반경"
+                    elif "상관" in ui or ui == "3":
+                        service = "상관없음"
+                    else:
+                        print(f"\n🤖 챗봇: '{user_input}'이(가) 어떤 기준인지 명확하지 않습니다. 1.소요시간 2.반경 3.상관없음 중에서 선택해주세요.")
+                        continue
+
+                    # 서비스 저장 및 요약 출력
+                    chatbot.user_state.update("service", service)
+                    print(f"\n🤖 챗봇: {service} 기준으로 설정했습니다.")
+                    print_summary(chatbot)
+
+                    # 다음 단계 분기
+                    if service == "소요시간":
+                        print("\n🤖 챗봇: 이동 방법? 1.도보 2.대중교통 3.상관없음")
+                        current_key = 'movement'
+                    elif service == "반경":
+                        print("\n🤖 챗봇: 반경(m)을 입력하세요")
+                        current_key = 'radius'
+                    else:  # 상관없음
+                        chatbot.user_state.update("movement", "상관없음")
+                        setup_stage = "infra"
+                        print("\n🤖 챗봇: 다음 중에서 가장 중요하게 생각하는 인프라를 최소 1개, 최대 3개까지 선택해주세요.")
+                        for i, infra in enumerate(infra_types, 1):
+                            print(f"{i}. {infra['name']} - {infra['description']}")
+                        print("\n번호를 입력해주세요 (예: 1,3,5 또는 1 3 5)")
+                    continue
             
-            elif current_key == 'movement':
-                movement_map = {
-                    "1": "도보", "도보": "도보",
-                    "2": "대중교통", "대중교통": "대중교통",
-                    "3": "상관없음", "상관없음": "상관없음"
-                }
-                
-                movement = movement_map.get(user_input.lower(), "도보")
-                chatbot.user_state.update("movement", movement)
-                
-                # 사용자 입력 처리 후 응답 및 요약
-                print(f"\n🤖 챗봇: {movement}로 설정했습니다.")
-                print_summary(chatbot)
-                
-                print("\n🤖 챗봇: 최대 몇 분 이내를 원하시나요?")
-                current_key = 'time_limit'
-                continue
-            
-            elif current_key == 'time_limit':
-                try:
-                    time_value = int(''.join(filter(str.isdigit, user_input)))
-                    chatbot.user_state.update("time_limit", time_value)
+                elif current_key == 'movement':
+                    movement_map = {
+                        "1": "도보", "도보": "도보",
+                        "2": "대중교통", "대중교통": "대중교통",
+                        "3": "상관없음", "상관없음": "상관없음"
+                    }
+                    
+                    movement = movement_map.get(user_input.lower(), "도보")
+                    chatbot.user_state.update("movement", movement)
                     
                     # 사용자 입력 처리 후 응답 및 요약
-                    print(f"\n🤖 챗봇: {time_value}분 이내로 설정했습니다.")
+                    print(f"\n🤖 챗봇: {movement}로 설정했습니다.")
                     print_summary(chatbot)
                     
-                    # 인프라 선호도 조사로 넘어감
-                    setup_stage = "infra"
-                    print("\n🤖 챗봇: 다음 중에서 가장 중요하게 생각하는 인프라를 최소 1개, 최대 3개까지 선택해주세요.")
-                    for i, infra in enumerate(infra_types, 1):
-                        print(f"{i}. {infra['name']} - {infra['description']}")
-                    print("\n번호를 입력해주세요 (예: 1,3,5 또는 1 3 5)")
-                except:
-                    print("\n🤖 챗봇: 숫자로 입력해주세요.")
-                continue
-            
-            elif current_key == 'radius':
-                try:
-                    radius = int(''.join(filter(str.isdigit, user_input)))
-                    chatbot.user_state.update("radius", radius)
-                    
-                    # 사용자 입력 처리 후 응답 및 요약
-                    print(f"\n🤖 챗봇: 반경을 {radius}m로 설정했습니다.")
-                    print_summary(chatbot)
-                    
-                    # 인프라 선호도 조사로 넘어감
-                    setup_stage = "infra"
-                    print("\n🤖 챗봇: 다음 중에서 가장 중요하게 생각하는 인프라를 최소 1개, 최대 3개까지 선택해주세요.")
-                    for i, infra in enumerate(infra_types, 1):
-                        print(f"{i}. {infra['name']} - {infra['description']}")
-                    print("\n번호를 입력해주세요 (예: 1,3,5 또는 1 3 5)")
-                except:
-                    print("\n🤖 챗봇: 숫자로 입력해주세요.")
-                continue
+                    print("\n🤖 챗봇: 최대 몇 분 이내를 원하시나요?")
+                    current_key = 'time_limit'
+                    continue
+                
+                elif current_key == 'time_limit':
+                    try:
+                        time_value = int(''.join(filter(str.isdigit, user_input)))
+                        chatbot.user_state.update("time_limit", time_value)
+                        
+                        # 사용자 입력 처리 후 응답 및 요약
+                        print(f"\n🤖 챗봇: {time_value}분 이내로 설정했습니다.")
+                        print_summary(chatbot)
+                        
+                        # 인프라 선호도 조사로 넘어감
+                        setup_stage = "infra"
+                        print("\n🤖 챗봇: 다음 중에서 가장 중요하게 생각하는 인프라를 최소 1개, 최대 3개까지 선택해주세요.")
+                        for i, infra in enumerate(infra_types, 1):
+                            print(f"{i}. {infra['name']} - {infra['description']}")
+                        print("\n번호를 입력해주세요 (예: 1,3,5 또는 1 3 5)")
+                    except:
+                        print("\n🤖 챗봇: 숫자로 입력해주세요.")
+                    continue
+                
+                elif current_key == 'radius':
+                    try:
+                        radius = int(''.join(filter(str.isdigit, user_input)))
+                        chatbot.user_state.update("radius", radius)
+                        
+                        # 사용자 입력 처리 후 응답 및 요약
+                        print(f"\n🤖 챗봇: 반경을 {radius}m로 설정했습니다.")
+                        print_summary(chatbot)
+                        
+                        # 인프라 선호도 조사로 넘어감
+                        setup_stage = "infra"
+                        print("\n🤖 챗봇: 다음 중에서 가장 중요하게 생각하는 인프라를 최소 1개, 최대 3개까지 선택해주세요.")
+                        for i, infra in enumerate(infra_types, 1):
+                            print(f"{i}. {infra['name']} - {infra['description']}")
+                        print("\n번호를 입력해주세요 (예: 1,3,5 또는 1 3 5)")
+                    except:
+                        print("\n🤖 챗봇: 숫자로 입력해주세요.")
+                    continue
         
         # 인프라 선호도 설정 단계
         elif setup_stage == "infra":
@@ -1111,7 +1117,7 @@ def main():
                         print(f"\n🤖 챗봇: 추천 매물을 가져오는 중 오류가 발생했습니다: {e}")
                         print("\n🤖 챗봇: 죄송합니다. 매물 검색 중 문제가 발생했습니다.")
                         print("\n🤖 챗봇: 챗봇을 종료합니다. 감사합니다!")
-                        exit()  # 프로그램 종료
+                        sys.exit(0)
 
 if __name__ == "__main__":
     main()

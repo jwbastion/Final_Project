@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify, session
-from flask_socketio import SocketIO
 import os
 import uuid
 
@@ -17,7 +16,6 @@ from utils.formatter import print_summary
 # Flask 앱 초기화
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-socketio = SocketIO(app)
 
 # 사용자 세션 관리 딕셔너리
 chatbot_sessions = {}
@@ -39,8 +37,7 @@ def get_or_create_chatbot(session_id):
             'current_infra_index': 0,
             'current_question_index': 0,
             'current_feature_index': 0,
-            'selected_infra_types': [],
-            'retry_count': 0
+            'selected_infra_types': []
         }
     
     return chatbot_sessions[session_id]
@@ -63,6 +60,9 @@ def chat():
     data = request.json
     user_message = data.get('message', '')
     session_id = session.get('session_id')
+    
+    # 디버깅 로그 추가
+    print(f"서버에 도착한 메시지: '{user_message}'")
     
     if not session_id or not user_message:
         return jsonify({'error': 'Invalid session or message'}), 400
@@ -102,8 +102,12 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
     next_stage = setup_stage
     next_key = current_key
     
+    # 사용자 입력 전처리 - 공백 제거 및 소문자 변환
+    cleaned_message = user_message.lower().strip()
+    print(f"전처리된 메시지: '{cleaned_message}'")
+    
     # 특별 명령어 처리
-    if user_message.lower() in ["다시", "처음부터", "초기화"]:
+    if cleaned_message in ["다시", "처음부터", "초기화"]:
         # 세션 초기화
         chatbot.user_state = UserState()
         session_data['setup_stage'] = 'budget'
@@ -117,7 +121,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
         return response, 'budget', 'rent'
     
     # 예산 관련 특별 명령어
-    if "예산을 올려줘" in user_message.lower() or "예산 상향" in user_message.lower():
+    if "예산을 올려줘" in cleaned_message or "예산 상향" in cleaned_message:
         current_rent = chatbot.user_state.get("rent", 50)
         new_rent = int(current_rent * 1.5)  # 50% 증가
         chatbot.user_state.update("rent", new_rent)
@@ -132,6 +136,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
             # 재검색 실행
             try:
                 recommendations = chatbot.recommender.get_recommendations()
+                from utils.formatter import format_recommendations
                 result = format_recommendations(recommendations, chatbot.user_state)
                 return result, 'complete', None
             except Exception as e:
@@ -139,7 +144,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
         return response, setup_stage, current_key
     
     # 반경 관련 특별 명령어
-    if "반경을 넓혀줘" in user_message.lower() or "반경 확장" in user_message.lower():
+    if "반경을 넓혀줘" in cleaned_message or "반경 확장" in cleaned_message:
         if chatbot.user_state.get("service") == "반경":
             current_radius = chatbot.user_state.get("radius", 500)
             new_radius = current_radius * 2  # 반경 2배 확장
@@ -154,6 +159,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
             # 재검색 실행
             try:
                 recommendations = chatbot.recommender.get_recommendations()
+                from utils.formatter import format_recommendations
                 result = format_recommendations(recommendations, chatbot.user_state)
                 return result, 'complete', None
             except Exception as e:
@@ -161,7 +167,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
         return response, setup_stage, current_key
     
     # 기본 조건 검색 명령어
-    if "기본 조건" in user_message.lower():
+    if "기본 조건" in cleaned_message:
         chatbot.user_state.update("rent", 100)
         chatbot.user_state.update("deposit", 2000)
         chatbot.user_state.update("maint", 50)
@@ -174,6 +180,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
             # 재검색 실행
             try:
                 recommendations = chatbot.recommender.get_recommendations()
+                from utils.formatter import format_recommendations
                 result = format_recommendations(recommendations, chatbot.user_state)
                 return result, 'complete', None
             except Exception as e:
@@ -183,7 +190,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
     # 예산 설정 단계
     if setup_stage == "budget":
         if current_key == 'rent':
-            if user_message.lower() not in ["없음", "기본"]:
+            if cleaned_message not in ["없음", "기본"]:
                 num = ''.join(filter(str.isdigit, user_message))
                 if num:
                     chatbot.user_state.update("rent", int(num))
@@ -198,7 +205,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
             response += f"\n\n다음은 보증금 설정이에요. 현재 설정된 보증금은 최대 {cur}만원입니다. 조정이 필요하시다면 금액을 알려주세요. (예: 500만원, 기본, 없음)"
         
         elif current_key == 'deposit':
-            if user_message.lower() not in ["없음", "기본"]:
+            if cleaned_message not in ["없음", "기본"]:
                 num = ''.join(filter(str.isdigit, user_message))
                 if num:
                     chatbot.user_state.update(current_key, int(num))
@@ -213,7 +220,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
             response += f"\n\n다음은 관리비 설정이에요. 현재 설정된 관리비는 최대 {cur}만원입니다. 조정이 필요하시다면 금액을 알려주세요. (예: 10만원, 기본, 없음)"
         
         elif current_key == 'maint':
-            if user_message.lower() not in ["없음", "기본"]:
+            if cleaned_message not in ["없음", "기본"]:
                 num = ''.join(filter(str.isdigit, user_message))
                 if num:
                     chatbot.user_state.update(current_key, int(num))
@@ -235,13 +242,30 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
     # 위치 선호도 설정 단계
     elif setup_stage == "location":
         if current_key == 'service':
+            # 확장된 서비스 맵 - 더 많은 사용자 입력 패턴 추가
             service_map = {
-                "1": "소요시간", "소요시간": "소요시간", "1️⃣": "소요시간",
-                "2": "반경", "반경": "반경", "2️⃣": "반경",
-                "3": "상관없음", "상관없음": "상관없음", "3️⃣": "상관없음"
+                "1": "소요시간", "소요시간": "소요시간", "1️⃣": "소요시간", "소요시간 기준": "소요시간", 
+                "소요시간이요": "소요시간", "시간": "소요시간", "시간 기준": "소요시간", "1️⃣ 소요시간 기준": "소요시간",
+                "2": "반경", "반경": "반경", "2️⃣": "반경", "반경 기준": "반경", "반경이요": "반경", 
+                "거리": "반경", "거리 기준": "반경", "2️⃣ 반경 기준": "반경", "반경기준": "반경", "반경 기준이요": "반경",
+                "3": "상관없음", "상관없음": "상관없음", "3️⃣": "상관없음", "상관없이요": "상관없음", 
+                "모두": "상관없음", "전체": "상관없음", "3️⃣ 상관없음": "상관없음"
             }
             
-            service = service_map.get(user_message.lower(), "소요시간")
+            # 부분 문자열 매칭 추가 (정확한 매칭이 없는 경우)
+            service = service_map.get(cleaned_message)
+            if service is None:
+                # 부분 매칭 시도
+                if "소요" in cleaned_message or "시간" in cleaned_message:
+                    service = "소요시간"
+                elif "반경" in cleaned_message or "거리" in cleaned_message:
+                    service = "반경"
+                elif "상관" in cleaned_message or "없" in cleaned_message or "모든" in cleaned_message:
+                    service = "상관없음"
+                else:
+                    service = "소요시간"  # 기본값
+            
+            print(f"인식된 서비스: {service}")
             chatbot.user_state.update("service", service)
             
             response = f"{service} 기준으로 설정했습니다."
@@ -266,13 +290,30 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
                 response += "\n번호를 입력해주세요 (예: 1,3,5 또는 1 3 5)"
         
         elif current_key == 'movement':
+            # 확장된 이동 방법 맵
             movement_map = {
-                "1": "도보", "도보": "도보", "1️⃣": "도보",
-                "2": "대중교통", "대중교통": "대중교통", "2️⃣": "대중교통",
-                "3": "상관없음", "상관없음": "상관없음", "3️⃣": "상관없음"
+                "1": "도보", "도보": "도보", "1️⃣": "도보", "도보이요": "도보", "걸어서": "도보", 
+                "걷기": "도보", "1️⃣ 도보": "도보", "도보로": "도보",
+                "2": "대중교통", "대중교통": "대중교통", "2️⃣": "대중교통", "대중교통이요": "대중교통", 
+                "버스": "대중교통", "지하철": "대중교통", "2️⃣ 대중교통": "대중교통",
+                "3": "상관없음", "상관없음": "상관없음", "3️⃣": "상관없음", "상관없이요": "상관없음", 
+                "모두": "상관없음", "3️⃣ 상관없음": "상관없음"
             }
             
-            movement = movement_map.get(user_message.lower(), "도보")
+            # 부분 문자열 매칭 추가
+            movement = movement_map.get(cleaned_message)
+            if movement is None:
+                # 부분 매칭 시도
+                if "도보" in cleaned_message or "걸어" in cleaned_message or "걷" in cleaned_message:
+                    movement = "도보"
+                elif "대중" in cleaned_message or "교통" in cleaned_message or "버스" in cleaned_message or "지하철" in cleaned_message:
+                    movement = "대중교통"
+                elif "상관" in cleaned_message or "없" in cleaned_message or "모든" in cleaned_message:
+                    movement = "상관없음"
+                else:
+                    movement = "도보"  # 기본값
+            
+            print(f"인식된 이동 방법: {movement}")
             chatbot.user_state.update("movement", movement)
             
             response = f"이동 방법을 {movement}로 설정했습니다."
@@ -330,11 +371,12 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
                 weights = [5, 3, 1]
                 selected_infra_types = []
                 infra_preferences = {}
+                infra_names = []
                 
                 for i, selection in enumerate(selections):
                     if i < len(weights):  # 최대 3개까지만 처리
                         infra_type = INFRA_TYPES[selection-1]["code"]
-                        infra_names = [INFRA_TYPES[selection-1]["name"]]
+                        infra_names.append(INFRA_TYPES[selection-1]["name"])
                         infra_preferences[infra_type] = weights[i]
                         selected_infra_types.append(infra_type)
                 
@@ -479,6 +521,7 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
                 # 추천 결과 출력
                 try:
                     recommendations = chatbot.recommender.get_recommendations()
+                    from utils.formatter import format_recommendations
                     response = format_recommendations(recommendations, chatbot.user_state)
                     
                     # 대화 이력에 추가
@@ -493,151 +536,5 @@ def process_setup_stage(chatbot, user_message, setup_stage, session_data):
 
     return response, next_stage, next_key
 
-def format_recommendations(recommendations, user_state):
-    """추천 매물 결과 포맷팅"""
-    result = "설정이 완료되었습니다. 다음은 추천 매물입니다:\n\n"
-    
-    # 매물이 없는 경우 처리 및 자동 조건 완화
-    if not recommendations["combined"]:
-        result = "설정하신 조건에 맞는 매물을 찾지 못했습니다.\n\n"
-        result += "조건을 자동으로 완화하여 다시 검색해보겠습니다.\n"
-        
-        # 조건 완화 (50% 증가)
-        original_rent = user_state.get("rent", 50)
-        new_rent = int(original_rent * 1.5)
-        user_state.update("rent", new_rent)
-        
-        if user_state.get("service") == "반경":
-            original_radius = user_state.get("radius", 500)
-            new_radius = original_radius * 2
-            user_state.update("radius", new_radius)
-            result += f"- 검색 반경: {original_radius}m → {new_radius}m\n"
-        
-        result += f"- 월세: {original_rent}만원 → {new_rent}만원\n\n"
-        
-        # 재검색
-        try:
-            recommendations = chatbot.recommender.get_recommendations()
-            
-            if not recommendations["combined"]:
-                # 여전히 결과가 없는 경우
-                result += "조건을 완화했지만 매물을 찾지 못했습니다. 다음과 같이 조건을 변경해보세요:\n\n"
-                result += "1. 예산 범위를 더 넓혀보세요 (월세, 보증금 상향 조정)\n"
-                result += "2. 검색 반경을 더 넓혀보세요\n"
-                result += "3. 다른 지역도 고려해보세요\n\n"
-                result += "조건을 변경하시겠어요? '예산을 올려줘', '반경을 넓혀줘', '기본 조건으로 검색해줘' 등으로 요청해주세요."
-                return result
-        except Exception as e:
-            return f"추천 매물을 가져오는 중 오류가 발생했습니다: {e}\n\n죄송합니다. 매물 검색 중 문제가 발생했습니다."
-    
-    # 유효한 매물만 필터링 (주소 정보가 있는 매물)
-    valid_combined = [prop for prop in recommendations["combined"] 
-                     if prop.get('address') and prop.get('address') != '주소 정보 없음']
-    
-    if valid_combined:
-        result += "**🏠 추천 매물 (위치+예산+인프라)**\n\n"
-        for i, prop in enumerate(valid_combined, 1):
-            # 소수점 값들을 정수로 변환
-            rent = int(float(prop.get('rent', 0))) if prop.get('rent') is not None else '?'
-            deposit = int(float(prop.get('deposit', 0))) if prop.get('deposit') is not None else '?'
-            maint = int(float(prop.get('maint', 0))) if prop.get('maint') is not None else '?'
-            infra_score = round(float(prop.get('infra_score', 0)), 1)
-            
-            # 시간 정보에서 소수점 제거
-            time_info = prop.get('time_info', '')
-            if time_info:
-                time_info = time_info.replace('.0분', '분')
-            
-            # 방 타입 정보 추가
-            room_type = prop.get('room_type', '')
-            room_info = f" {room_type}" if room_type else ""
-            
-            result += f"{i}. {prop['address']} ({prop['station']}){room_info}\n"
-            result += f"   월세: {rent}만원, 보증금: {deposit}만원, 관리비: {maint}만원\n"
-            
-            # 추가 정보 (층수, 면적, 방향 등)
-            floor = prop.get('floor', '정보 없음')
-            area = f"{int(float(prop.get('area', 0)))}㎡" if prop.get('area') is not None else '정보 없음'
-            direction = prop.get('direction', '정보 없음')
-            heating = prop.get('heating_type', '정보 없음')
-            parking = '가능' if prop.get('parking') else '불가능'
-            elevator = '있음' if prop.get('elevator') else '없음'
-            
-            result += f"   층수: {floor}, 면적: {area}, 방향: {direction}\n"
-            result += f"   난방: {heating}, 주차: {parking}, 엘리베이터: {elevator}\n"
-            result += f"   {time_info}, 인프라 점수: {infra_score:.1f}\n"
-            
-            # 인프라 세부 정보 추가
-            if prop.get("infra_details"):
-                result += "   인프라 세부 정보:\n"
-                for infra_type, detail in prop["infra_details"].items():
-                    if detail.get("score", 0) > 0:
-                        infra_name = next((x["name"] for x in INFRA_TYPES if x["code"] == infra_type), infra_type)
-                        distance = int(detail.get('distance', 0))
-                        result += f"   - {infra_name}: {detail['nearest']} (거리: {distance}m)\n"
-            
-            result += "\n"
-    else:
-        # 유효한 매물이 없는 경우, 필터링 전 매물 사용
-        result += "**🏠 추천 매물 (위치+예산+인프라)**\n\n"
-        for i, prop in enumerate(recommendations["combined"][:3], 1):
-            # 소수점 값들을 정수로 변환
-            rent = int(float(prop.get('rent', 0))) if prop.get('rent') is not None else '?'
-            deposit = int(float(prop.get('deposit', 0))) if prop.get('deposit') is not None else '?'
-            maint = int(float(prop.get('maint', 0))) if prop.get('maint') is not None else '?'
-            infra_score = round(float(prop.get('infra_score', 0)), 1)
-            
-            # 시간 정보에서 소수점 제거
-            time_info = prop.get('time_info', '')
-            if time_info:
-                time_info = time_info.replace('.0분', '분')
-            
-            # 방 타입 정보 추가
-            room_type = prop.get('room_type', '')
-            room_info = f" {room_type}" if room_type else ""
-            
-            result += f"{i}. {prop.get('address', '주소 정보 없음')} ({prop.get('station', '역 정보 없음')}){room_info}\n"
-            result += f"   월세: {rent}만원, 보증금: {deposit}만원, 관리비: {maint}만원\n"
-            
-            # 추가 정보 (층수, 면적, 방향 등)
-            floor = prop.get('floor', '정보 없음')
-            area = f"{int(float(prop.get('area', 0)))}㎡" if prop.get('area') is not None else '정보 없음'
-            direction = prop.get('direction', '정보 없음')
-            heating = prop.get('heating_type', '정보 없음')
-            parking = '가능' if prop.get('parking') else '불가능'
-            elevator = '있음' if prop.get('elevator') else '없음'
-            
-            result += f"   층수: {floor}, 면적: {area}, 방향: {direction}\n"
-            result += f"   난방: {heating}, 주차: {parking}, 엘리베이터: {elevator}\n"
-            result += f"   {time_info}, 인프라 점수: {infra_score:.1f}\n"
-            
-            # 인프라 세부 정보 추가
-            if prop.get("infra_details"):
-                result += "   인프라 세부 정보:\n"
-                for infra_type, detail in prop["infra_details"].items():
-                    if detail.get("score", 0) > 0:
-                        infra_name = next((x["name"] for x in INFRA_TYPES if x["code"] == infra_type), infra_type)
-                        distance = int(detail.get('distance', 0))
-                        result += f"   - {infra_name}: {detail['nearest']} (거리: {distance}m)\n"
-            
-            result += "\n"
-    
-    result += "추천 매물에 대해 더 알고 싶으신 내용이 있으신가요? (예: '1번 매물에 대해 자세히 알려줘', '예산을 올려줘', '반경을 넓혀줘')"
-    return result
-
-@socketio.on('connect')
-def handle_connect():
-    """소켓 연결 이벤트 처리"""
-    print(f"Client connected: {request.sid}")
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    """소켓 연결 해제 이벤트 처리"""
-    print(f"Client disconnected: {request.sid}")
-    # 연결이 끊겼을 때 세션 정리 (선택 사항)
-    session_id = session.get('session_id')
-    if session_id and session_id in chatbot_sessions:
-        del chatbot_sessions[session_id]
-
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    app.run(debug=True)
