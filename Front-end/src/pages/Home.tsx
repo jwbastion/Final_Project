@@ -44,28 +44,28 @@ export default function Home() {
 
   const chatbotHistory: Listing[] = [
     {
-      address: '강남구 역삼동',
-      price: '1000/50',
-      area: '20.09㎡',
-      floor: '2층',
+      address: '영등포구 당산동1가',
+      price: '3000/45',
+      area: '19.8㎡',
+      floor: '4층',
       type: '원룸',
     },
     {
-      address: '강남구 논현동',
-      price: '1000/70',
-      area: '32.9㎡',
-      floor: '반지층',
+      address: '영등포구 영등포동6가',
+      price: '4685/56',
+      area: '33㎡',
+      floor: '10층',
       type: '투룸',
     },
   ];
 
   const distanceRecs: Listing[] = [
     {
-      address: '강남구 논현동',
-      price: '1000/70',
-      area: '32.9㎡',
-      floor: '반지층',
-      type: '투룸',
+      address: '영등포구 영등포동6가',
+    price: '4685/56',
+    area: '33㎡',
+    floor: '10층',
+    type: '투룸',
     },
   ];
 
