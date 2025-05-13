@@ -1,6 +1,6 @@
-import "@/assets/styles/survey-step4.css";
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '@/assets/styles/survey-step4.css';
 
 const SurveyStep4: React.FC = () => {
   const navigate = useNavigate();
@@ -8,16 +8,15 @@ const SurveyStep4: React.FC = () => {
   useEffect(() => {
     const email = localStorage.getItem("email");
     const preferred_area = localStorage.getItem("preferred_area");
+    const latitude = localStorage.getItem("latitude")
+    const longitude = localStorage.getItem("longitude")
+    const address = localStorage.getItem("address")
     const budget = localStorage.getItem("budget");
     const monthly = localStorage.getItem("monthly");
     const maintenance_fee = localStorage.getItem("maintenance_fee");
 
-    const address = localStorage.getItem("address");              // 📍추가
-    const area_x = localStorage.getItem("area_x");                // 📍추가
-    const area_y = localStorage.getItem("area_y"); 
-
     const submitSurvey = async () => {
-      console.log("📤 보낼 설문 데이터:", { email, preferred_area, budget, monthly, maintenance_fee, address, area_x, area_y });
+      console.log("📤 보낼 설문 데이터:", { email, preferred_area, latitude, longitude, address, budget, monthly, maintenance_fee });
 
       try {
         const response = await fetch("http://localhost:5000/api/survey", {
@@ -26,12 +25,12 @@ const SurveyStep4: React.FC = () => {
           body: JSON.stringify({
             email,
             preferred_area,
+            latitude: latitude ? Number(latitude) : null,
+            longitude: longitude ? Number(longitude) : null,
+            address,
             budget: budget ? parseInt(budget) : null,
             monthly: monthly ? parseInt(monthly) : null,
-            maintenance_fee: maintenance_fee ? parseInt(maintenance_fee) : null,
-            address,                                // 📍추가
-            area_x: area_x ? parseFloat(area_x) : null,  // 📍추가
-            area_y: area_y ? parseFloat(area_y) : null 
+            maintenance_fee: maintenance_fee ? parseInt(maintenance_fee) : null
           })
         });
 
@@ -56,10 +55,16 @@ const SurveyStep4: React.FC = () => {
         <div className="step4-icon">🎉</div>
         <h3 className="step4-title">설문 제출 완료!</h3>
         <p className="step4-text">
-          제출된 응답을 바탕으로 사용자의 유형을<br />
+          제출된 응답을 바탕으로 사용자의 유형을<br/>
           분석 중입니다. 잠시만 기다려 주세요.
         </p>
-        <button className="step4-button" onClick={() => navigate('/main')}>분석결과 보러가기</button>
+        <button
+          type="button"
+          className="step4-button"
+          onClick={() => navigate('/main')}
+        >
+          분석결과 보러가기
+        </button>
       </div>
     </div>
   );

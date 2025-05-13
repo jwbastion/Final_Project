@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import "../MainPage.css";
+import "../mainpage.css";
 
 export default function Layout() {
   return (

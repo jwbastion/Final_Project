@@ -1,23 +1,28 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Chatbot from './pages/chatbot';
+import FavoritesPage from './pages/favoritespage';
 import LoginPage from './pages/Login';
+import MainHome from './pages/mainhome';
+import MainPage from './pages/Mainpage';
+import ProfilePage from './pages/profile';
 import SignupPage from './pages/Signup';
-import Layout from './pages/Layout';
-import SurveyFlow from './pages/Survey/SurveyFlow'; 
-import Mainpage from './pages/Mainpage';
+import SurveyPage from './pages/Survey/SurveyFlow';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 로그인/회원가입은 레이아웃 없이 보여줌 */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/survey" element={<SurveyPage />} />
 
-        {/* 나머지 페이지는 Layout(헤더 포함) 사용 */}
-        <Route element={<Layout />}>
-          <Route path="/survey" element={<SurveyFlow />} />
-          <Route path="/main" element={<Mainpage />} />
-        </Route>
+        {/* 1) MainPage는 Sidebar 없이 */}
+        <Route path="/main"    element={<MainPage />} >
+          <Route index element={<MainHome />} />
+          <Route path="chatbot" element={<Chatbot />} />
+          <Route path="/main/favorites" element={<FavoritesPage />} />
+          <Route path="/main/profile" element={<ProfilePage />} />
+          </Route>
       </Routes>
     </BrowserRouter>
   );

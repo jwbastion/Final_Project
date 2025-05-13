@@ -17,7 +17,14 @@ const LoginPage: React.FC = () => {
     try {
         const response = await axios.post('http://localhost:5000/api/login', { email, password });
         if (response.status === 200) {
-          localStorage.setItem("email", email);  // 이후 설문 제출 등에서 필요
+          const email = response.data.email;
+          const password = response.data.password;
+          const nickname = response.data.nickname;
+
+          localStorage.setItem("email", email);
+          localStorage.setItem("password", password);
+          localStorage.setItem("nickname", nickname);
+          
           alert('로그인 성공!');
           navigate('/survey');
         }
