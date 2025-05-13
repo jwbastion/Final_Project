@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../assets/styles/MainPage.css';
+import '../assets/styles/Mainpage.css';
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();

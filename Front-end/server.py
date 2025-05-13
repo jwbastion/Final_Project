@@ -12,7 +12,6 @@ users = {}
 
 DATA_FILE = "survey_responses.json"
 
-
 def load_responses():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r", encoding="utf-8") as f:
@@ -65,7 +64,6 @@ def get_latest_survey():
     if not responses:
         return jsonify({}), 404
     return jsonify(responses[-1])  # 마지막 설문 응답 반환
-
 
 if __name__ == "__main__":
     app.run(debug=True)
