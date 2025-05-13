@@ -9,6 +9,14 @@ from utils import print_summary
 def create_app():
     app = Flask(__name__)
     
+    # CORS 설정
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+        return response
+    
     # API 블루프린트 등록
     app.register_blueprint(api_bp, url_prefix='/api')
     
@@ -685,6 +693,102 @@ def run_cli():
                             print("  1. 예산 범위를 넓혀보세요 (월세, 보증금 상향 조정)")
                             print("  2. 검색 반경을 넓혀보세요 (현재 반경 → 더 넓은 범위)")
                             print("  3. 다른 지역도 고려해보세요")
+
+                        # 여기에 관심 매물 관련 코드 추가
+                        if has_recommendations:
+                            print("\n💾 관심 매물 저장하기")
+                            print("추천된 매물 중 관심 있는 매물의 번호를 입력하세요 (예: 1,3 또는 1 3)")
+                            print("관심 없으시면 그냥 엔터키를 눌러주세요.")
+                            
+                            favorites_input = input("\n🙋 사용자: ")
+                            
+                            if favorites_input.strip():
+                                # 입력 파싱 (쉼표 또는 공백으로 구분)
+                                if ',' in favorites_input:
+                                    favorite_numbers = [int(s.strip()) for s in favorites_input.split(',') if s.strip().isdigit()]
+                                else:
+                                    favorite_numbers = [int(s.strip()) for s in favorites_input.split() if s.strip().isdigit()]
+                                
+                                # 유효한 번호만 필터링
+                                valid_numbers = [n for n in favorite_numbers if 1 <= n <= len(sorted_properties)]
+                                
+                                if valid_numbers:
+                                    # 선택된 매물 저장
+                                    saved_favorites = []
+                                    for i in valid_numbers:
+                                        if i <= len(sorted_properties):
+                                            saved_favorites.append(sorted_properties[i-1])
+                                    
+                                    # 저장 결과 출력
+                                    print(f"\n✅ {len(saved_favorites)}개의 매물을 관심 목록에 저장했습니다.")
+                                    
+                                    # 실제로는 여기서 DB에 저장하는 코드 추가
+                                    # 예시: chatbot.user_state.save_favorites(saved_favorites)
+                                    
+                                    # 간단한 파일 저장으로 대체
+                                    import json
+                                    import os
+                                    
+                                    # 사용자별 관심 매물 폴더 생성
+                                    favorites_dir = "favorites"
+                                    os.makedirs(favorites_dir, exist_ok=True)
+                                    
+                                    # 사용자 ID 또는 기본값으로 파일명 생성
+                                    user_id = chatbot.user_state.get("user_uuid", "default_user")
+                                    filename = os.path.join(favorites_dir, f"{user_id}_favorites.json")
+                                    
+                                    # 기존 관심 매물 로드 (있으면)
+                                    existing_favorites = []
+                                    if os.path.exists(filename):
+                                        try:
+                                            with open(filename, 'r', encoding='utf-8') as f:
+                                                existing_favorites = json.load(f)
+                                        except:
+                                            pass
+                                    
+                                    # 새 관심 매물 추가 및 중복 제거
+                                    all_favorites = existing_favorites
+                                    for fav in saved_favorites:
+                                        # 주소를 기준으로 중복 체크
+                                        if not any(existing.get('address') == fav.get('address') for existing in all_favorites):
+                                            all_favorites.append(fav)
+                                    
+                                    # 파일에 저장
+                                    with open(filename, 'w', encoding='utf-8') as f:
+                                        json.dump(all_favorites, f, ensure_ascii=False, indent=2)
+                                    
+                                    print(f"💾 관심 매물이 {filename}에 저장되었습니다.")
+                                else:
+                                    print("⚠️ 유효한 매물 번호가 없습니다.")
+                        
+                        # 관심 매물 보기 옵션
+                        print("\n📋 관심 매물을 보시겠습니까? (y/n)")
+                        view_favorites = input("\n🙋 사용자: ").strip().lower()
+                        
+                        if view_favorites in ['y', 'yes', '네', '예']:
+                            # 관심 매물 불러오기
+                            import json
+                            import os
+                            
+                            # 사용자 ID 또는 기본값으로 파일명 생성
+                            user_id = chatbot.user_state.get("user_uuid", "default_user")
+                            filename = os.path.join("favorites", f"{user_id}_favorites.json")
+                            
+                            if os.path.exists(filename):
+                                try:
+                                    with open(filename, 'r', encoding='utf-8') as f:
+                                        favorites = json.load(f)
+                                    
+                                    if favorites:
+                                        print("\n❤️ [관심 매물 목록]")
+                                        for i, fav in enumerate(favorites, 1):
+                                            print_property(i, fav, detailed=True, user_preferences=chatbot.user_state.state)
+                                    else:
+                                        print("\n⚠️ 저장된 관심 매물이 없습니다.")
+                                except:
+                                    print("\n⚠️ 관심 매물을 불러오는 중 오류가 발생했습니다.")
+                            else:
+                                print("\n⚠️ 저장된 관심 매물이 없습니다.")
 
                         print("\n🤖 챗봇: 챗봇을 종료합니다. 감사합니다!")
                         
