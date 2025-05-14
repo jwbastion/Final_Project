@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 import jwt
 import datetime
 from functools import wraps
-from config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION, DB_CONFIG
-from chatbot import RealEstateChatbot
+from RAG.api.config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION, DB_CONFIG
+from RAG.api.chatbot import RealEstateChatbot
 import psycopg2
 from psycopg2.extras import RealDictCursor
 

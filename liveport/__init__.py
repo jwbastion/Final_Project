@@ -4,13 +4,17 @@ from flask_cors import CORS
 from liveport.config import Config
 from liveport.models.user_model import db
 from liveport.routes.user_route import user_bp
+from RAG.api.app import api_bp
+
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    CORS(app)
+    CORS(app, supports_credentials=True)
     db.init_app(app)
+
     app.register_blueprint(user_bp, url_prefix="/api")
+    app.register_blueprint(api_bp, url_prefix="/api")
 
     with app.app_context():
         print("\n🔍 현재 등록된 라우트 목록:")

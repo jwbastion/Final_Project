@@ -1,0 +1,44 @@
+[
+  {
+    "address": "서울 광진구 자양동 624-30",
+    "station": "구의(광진구청)역",
+    "rent": 55.0,
+    "deposit": 1000.0,
+    "maint": 3.0,
+    "lat": 37.53518956,
+    "lng": 127.0826427,
+    "walk_time": 11.0,
+    "transit_time": 8.0,
+    "floor": "3층",
+    "heating_type": "개별난방",
+    "parking": true,
+    "facilities": "벽걸이형, 냉장고, 싱크대, 테라스",
+    "view": "동",
+    "size": 8.0,
+    "엘리베이터": "없음",
+    "type": "원룸",
+    "안전시설": "현관보안",
+    "infra_score": 5.0,
+    "feature_score": 1,
+    "total_score": 6.0,
+    "infra_details": {
+      "traffic_subway": {
+        "distance": 714.4955481419348,
+        "score": 3.2,
+        "nearest": "02호선 구의(광진구청)역"
+      },
+      "life_mart": {
+        "distance": 929.3942968490637,
+        "score": 1.6,
+        "nearest": "이마트 자양점"
+      },
+      "health_hospital": {
+        "distance": 72.1444140813683,
+        "score": 1.0,
+        "nearest": "혜민병원"
+      }
+    },
+    "id": "1136",
+    "time_info": "대중교통 8.0분"
+  }
+]

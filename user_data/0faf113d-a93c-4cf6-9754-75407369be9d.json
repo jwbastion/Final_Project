@@ -1,0 +1,43 @@
+{
+  "user_uuid": "0faf113d-a93c-4cf6-9754-75407369be9d",
+  "lat": 37.5380974,
+  "lng": 127.0890198,
+  "service": "소요시간",
+  "movement": "대중교통",
+  "time_limit": 15,
+  "radius": null,
+  "rent": 90,
+  "deposit": 1000,
+  "maint": 15,
+  "infra_preferences": {
+    "traffic_subway": 5,
+    "life_mart": 3,
+    "health_hospital": 1
+  },
+  "infra_details": {
+    "traffic_subway": {
+      "0": "2"
+    },
+    "life_mart": {
+      "0": "이마트",
+      "1": "15"
+    },
+    "health_hospital": {
+      "0": "아니요. 종합병원을 원합니다.",
+      "1": "15"
+    }
+  },
+  "property_features": {
+    "size": "20",
+    "floor": "3",
+    "heating": "개별",
+    "parking": "아니요",
+    "elevator": "중요하지 않습니다",
+    "direction": "상관없습니다"
+  },
+  "chat_history": [],
+  "address": "서울 도봉구",
+  "preferred_area": "구의역",
+  "nickname": "james",
+  "setup_complete": true
+}

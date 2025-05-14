@@ -29,19 +29,34 @@ const Chatbot: React.FC = () => {
     }
   }, []);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
 
-    // 1. 사용자 입력 추가
     const userMessage: Message = { sender: 'user', text: input };
+    setMessages(prev => [...prev, userMessage]);
 
-    // 2. AI 응답 추가 (간단한 더미 답변)
-    const aiMessage: Message = { sender: 'ai', text: `AI 답변: "${input}"에 대해 응답합니다.` };
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/chat/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ message: input }),
+      });
 
-    // 3. 메세지 추가 (user → ai 순서)
-    setMessages(prev => [...prev, userMessage, aiMessage]);
+      const data = await response.json();
+      const aiMessage: Message = {
+        sender: 'ai',
+        text: data.success ? data.response : (data.message || '응답을 처리하지 못했습니다.')
+      };
 
-    // 4. 입력창 초기화
+      setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      setMessages(prev => [...prev, { sender: 'ai', text: '서버와 연결할 수 없습니다.' }]);
+    }
+
     setInput('');
   };
 
