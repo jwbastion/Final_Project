@@ -237,8 +237,8 @@
   background: #1250a6;
 }
 
-/* 삭제 버튼 스타일 */
-.remove-btn {
+/* 추가/삭제 버튼 스타일 */
+.mini-btn {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -252,10 +252,34 @@
   transition: color 0.15s;
   z-index: 2;
 }
-.remove-btn:hover {
+.mini-btn:hover {
   color: #e53935;
   background: #f8d7da;
   border-radius: 50%;
+}
+
+/* 상세보기 버튼 스타일 */
+.detail-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+.detail-btn:hover {
+  background: #1250a6;
+}
+
+/* 추천 보고서 버튼 스타일 */
+.report-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+.report-btn:hover {
+  background: #1250a6;
 }
 
 .scroll-card-list {
