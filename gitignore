@@ -1,0 +1,26 @@
+# Python 관련
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+*.sqlite3
+venv/
+# Jupyter
+.ipynb_checkpoints/
+# VSCode 설정 폴더
+.vscode/
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+# 환경 파일
+.env
+*.log
+# 기타
+*.csv
+*.zip
+
+
+

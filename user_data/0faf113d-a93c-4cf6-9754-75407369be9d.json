@@ -1,0 +1,37 @@
+{
+  "user_uuid": "0faf113d-a93c-4cf6-9754-75407369be9d",
+  "lat": 37.5380974,
+  "lng": 127.0890198,
+  "service": "소요시간",
+  "movement": "대중교통",
+  "time_limit": 10,
+  "radius": null,
+  "rent": 80,
+  "deposit": 200,
+  "maint": 15,
+  "infra_preferences": {
+    "life_convenience_store": 5
+  },
+  "infra_details": {
+    "life_convenience_store": {
+      "common_importance": "5",
+      "common_distance": "10",
+      "common_frequency": "5",
+      "specific_preferred_brand": "상관없음"
+    }
+  },
+  "property_features": {
+    "type": "상관없음",
+    "floor": "2층 이상",
+    "size": "10평 이하",
+    "direction": "남",
+    "heating": "중앙난방",
+    "parking": "아니요",
+    "elevator": "네"
+  },
+  "chat_history": [],
+  "address": "서울 도봉구",
+  "preferred_area": "구의역",
+  "nickname": "james",
+  "setup_complete": true
+}
