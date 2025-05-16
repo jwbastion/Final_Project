@@ -58,7 +58,7 @@ export default function Report({
           textAlign: 'left',
         }}
       >
-        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>🏙️ 주변 생활시설</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>🏙️ 주변 생활시설</h2>
         <div
           style={{
             display: 'grid',
