@@ -1,4 +1,6 @@
 import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 // 각 데이터 타입 정의
 interface InfrastructureItem {
@@ -14,16 +16,57 @@ interface TimelineItem {
 }
 
 interface ReportProps {
+  detailInfo: Record<string, string | number>;
   infrastructure: InfrastructureItem[];
   timeline: TimelineItem[];
 }
 
 export default function Report({
+  detailInfo,
   infrastructure,
   timeline,
 }: ReportProps) {
+  // 위도/경도 기본값 설정 (예시)
+  const lat = Number(detailInfo.lat ?? 37.5225);
+  const lng = Number(detailInfo.lng ?? 126.9057);
+  const address = detailInfo['주소(지번)'] ?? '서울특별시 영등포구 영등포동6가 66-11';
+
   return (
     <div>
+      {/* 매물 주소 */}
+      <section
+        style={{
+          marginBottom: 32,
+          padding: 20,
+          borderRadius: 8,
+          lineHeight: 1.6,
+          textAlign: 'left',
+        }}
+      >
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>
+          🏠 매물 위치: 서울특별시 영등포구 영등포동6가 66-11
+        </h2>
+        <div style={{ width: '100%', height: 300, borderRadius: 8, overflow: 'hidden' }}>
+          <MapContainer
+            center={[lat, lng]}
+            zoom={16}
+            style={{ width: '100%', height: '100%' }}
+            scrollWheelZoom={false}
+            dragging={false}
+            doubleClickZoom={false}
+            zoomControl={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={[lat, lng]}>
+              <Popup>{address}</Popup>
+            </Marker>
+          </MapContainer>
+        </div>
+      </section>
+
       {/* 매물 분석 요약 */}
       <section
         style={{
@@ -35,7 +78,7 @@ export default function Report({
         }}
       >
         <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>
-          🏠 (닉네임)님 매물 분석 요약
+          📝 (닉네임)님 성향 분석 요약
         </h2>
         <ul style={{ paddingLeft: 20, marginBottom: 16 }}>
           <li><strong>역세권 중심 생활</strong>을 선호하며, 지하철 도보 10분 이내 매물에 높은 관심.</li>
@@ -58,7 +101,7 @@ export default function Report({
           textAlign: 'left',
         }}
       >
-        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>🏙️ 주변 생활시설</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>🏙️ 주변 생활시설</h2>
         <div
           style={{
             display: 'grid',
@@ -94,7 +137,7 @@ export default function Report({
           textAlign: 'left',
         }}
       >
-        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>
           ⏱️ 타임라인 정보
         </h2>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15 }}>

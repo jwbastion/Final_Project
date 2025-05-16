@@ -12,7 +12,7 @@ export default function DetailModalContent({ listingId, onClose }: Props) {
   // 예시: const { data, isLoading } = useQuery(['listingDetail', listingId], fetchListingDetail);
   const sampleData = {
     detailInfo: {
-      '주소(지번)': '서울특별시 영등포구 영등포동 6가 66-11',
+      '주소(지번)': '서울특별시 영등포구 영등포동6가 66-11',
       '주소(도로명)': '영신로 40길 20',
       '보증금/월세(만원)': '4685/56',
       '면적': '33㎡',

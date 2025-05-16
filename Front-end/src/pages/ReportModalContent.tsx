@@ -11,6 +11,18 @@ export default function ReportModalContent({ listingId, onClose }: Props) {
   // listingId로 DB에서 상세정보를 fetch하거나, props로 데이터 전달받아 렌더링
   // 예시: const { data, isLoading } = useQuery(['listingDetail', listingId], fetchListingDetail);
   const sampleData = {
+    detailInfo: {
+      '주소(지번)': '서울특별시 영등포구 영등포동6가 66-11',
+      '주소(도로명)': '영신로40길 20',
+      '보증금/월세(만원)': '4685/56',
+      '면적': '33㎡',
+      '해당층': '10층',
+      '방종류': '투룸',
+      '근처 지하철역': '영등포시장역',
+      '건축연도': '2021년',
+      '비고': '개별난방, 도시가스',
+    },
+
     infrastructure: [
       { category: '지하철', icon: '🚇', time: '도보 6분' },
       { category: '버스정류장', icon: '🚌', time: '도보 3분' },
