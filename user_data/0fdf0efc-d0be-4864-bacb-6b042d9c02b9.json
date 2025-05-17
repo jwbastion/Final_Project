@@ -1,0 +1,29 @@
+{
+  "user_uuid": "0fdf0efc-d0be-4864-bacb-6b042d9c02b9",
+  "lat": 37.6531817,
+  "lng": 127.0476987,
+  "service": "소요시간",
+  "movement": "도보",
+  "time_limit": 15,
+  "radius": null,
+  "rent": 30,
+  "deposit": 30,
+  "maint": 10,
+  "infra_preferences": {
+    "station": 5,
+    "hospital": 3,
+    "cafe": 1
+  },
+  "infra_details": {},
+  "property_features": {
+    "floor": "15~20평",
+    "index": 1
+  },
+  "chat_history": [],
+  "address": "서울 도봉구",
+  "preferred_area": "창동역",
+  "nickname": "pogba",
+  "setup_complete": true,
+  "setup_stage": "infra",
+  "current_key": "time_limit"
+}

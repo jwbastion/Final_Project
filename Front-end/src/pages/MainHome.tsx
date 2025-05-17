@@ -19,7 +19,7 @@ const MainHome: React.FC = () => {
 
   useEffect(() => {
     const email = localStorage.getItem('email');
-    fetch(`http://localhost:5000/api/survey/latest?email=${email}`)
+    fetch(`http://localhost:5000/api/user/survey/latest?email=${email}`)
       .then(res => res.ok ? res.json() : Promise.reject("서버 오류"))
       .then((data: SurveyData) => setSurvey(data))
       .catch(console.error);

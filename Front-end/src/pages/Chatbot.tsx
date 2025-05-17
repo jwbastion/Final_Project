@@ -15,9 +15,7 @@ interface Message {
 
 const Chatbot: React.FC = () => {
   const { nickname } = useOutletContext<OutletContextType>();
-  const [messages, setMessages] = useState<Message[]>([
-    { sender: 'ai', text: '안녕하세요! 챗봇 분석을 시작합니다.' }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [profileImage, setProfileImage] = useState<string>('');
 
@@ -27,23 +25,50 @@ const Chatbot: React.FC = () => {
     if (storedImage) {
       setProfileImage(storedImage);
     }
+
+    const initChat = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const uuid = localStorage.getItem('user_uuid');
+
+        const response = await fetch('http://localhost:5000/api/chat/message', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ message: '', uuid }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setMessages([{ sender: 'ai', text: data.response }]);
+        }
+      } catch (error) {
+        setMessages([{ sender: 'ai', text: '서버와 연결할 수 없습니다.' }]);
+      }
+    };
+
+    initChat();
   }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
 
+    const token = localStorage.getItem('token');
+    const uuid = localStorage.getItem('user_uuid');
+
     const userMessage: Message = { sender: 'user', text: input };
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5000/api/chat/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input, uuid }),
       });
 
       const data = await response.json();

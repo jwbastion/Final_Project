@@ -1,0 +1,29 @@
+{
+  "user_uuid": "c0023e33-a7b3-4be0-8ffc-fb3b3755a10b",
+  "lat": 37.6531817,
+  "lng": 127.0476987,
+  "service": "소요시간",
+  "movement": "도보",
+  "time_limit": 15,
+  "radius": null,
+  "rent": 30,
+  "deposit": 50,
+  "maint": 10,
+  "infra_preferences": {
+    "traffic_subway": 5,
+    "life_mart": 3,
+    "life_convenience_store": 1
+  },
+  "infra_details": {},
+  "property_features": {
+    "index": 1,
+    "size": "2"
+  },
+  "chat_history": [],
+  "address": "서울 도봉구",
+  "preferred_area": "창동역",
+  "nickname": "james",
+  "setup_complete": true,
+  "setup_stage": "features",
+  "current_key": "time_limit"
+}

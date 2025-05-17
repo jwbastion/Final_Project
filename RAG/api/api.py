@@ -175,8 +175,10 @@ def login():
 def chat_message():
     data = request.get_json()
 
-    if not data or not data.get("message"):
+    if not data:
         return jsonify({"success": False, "message": "메시지를 입력하세요!"}), 400
+
+    message = data.get("message", "").strip()
 
     try:
         # 사용자 UUID는 JWT에서 가져옴

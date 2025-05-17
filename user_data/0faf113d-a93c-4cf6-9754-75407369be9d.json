@@ -3,10 +3,10 @@
   "lat": 37.5380974,
   "lng": 127.0890198,
   "service": "소요시간",
-  "movement": "대중교통",
+  "movement": "도보",
   "time_limit": 15,
   "radius": null,
-  "rent": 90,
+  "rent": 30,
   "deposit": 1000,
   "maint": 15,
   "infra_preferences": {
@@ -29,15 +29,18 @@
   },
   "property_features": {
     "size": "20",
-    "floor": "3",
+    "floor": "",
     "heating": "개별",
     "parking": "아니요",
     "elevator": "중요하지 않습니다",
-    "direction": "상관없습니다"
+    "direction": "상관없습니다",
+    "index": 1
   },
   "chat_history": [],
   "address": "서울 도봉구",
   "preferred_area": "구의역",
   "nickname": "james",
-  "setup_complete": true
+  "setup_complete": true,
+  "setup_stage": "infra",
+  "current_key": "time_limit"
 }

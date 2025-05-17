@@ -19,7 +19,7 @@ const SurveyStep4: React.FC = () => {
       console.log("📤 보낼 설문 데이터:", { email, preferred_area, latitude, longitude, address, budget, monthly, maintenance_fee });
 
       try {
-        const response = await fetch("http://localhost:5000/api/survey", {
+        const response = await fetch("http://localhost:5000/api/user/survey", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

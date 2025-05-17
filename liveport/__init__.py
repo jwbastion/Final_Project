@@ -13,7 +13,7 @@ def create_app():
     CORS(app, supports_credentials=True)
     db.init_app(app)
 
-    app.register_blueprint(user_bp, url_prefix="/api")
+    app.register_blueprint(user_bp, url_prefix="/api/user")
     app.register_blueprint(api_bp, url_prefix="/api")
 
     with app.app_context():

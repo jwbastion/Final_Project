@@ -13,15 +13,17 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     // 로그인 처리 로직
     try {
-        const response = await axios.post('http://localhost:5000/api/login', { email, password });
+        const response = await axios.post('http://localhost:5000/api/user/login', { email, password });
         if (response.status === 200) {
-          const email = response.data.email;
-          const password = response.data.password;
-          const nickname = response.data.nickname;
+          const email = response.data.user.email;
+          const password = response.data.user.password;
+          const nickname = response.data.user.nickname;
+          const token = response.data.token;
 
           localStorage.setItem("email", email);
           localStorage.setItem("password", password);
           localStorage.setItem("nickname", nickname);
+          localStorage.setItem("token", token);
 
           alert('로그인 성공!');
           navigate('/survey');

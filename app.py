@@ -1,4 +1,3 @@
-# 최상위 app.py
 from liveport import create_app
 
 app = create_app()

@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 from liveport.services.user_service import create_user, verify_user
 from liveport.models.user_model import db, Users
+from RAG.api.config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION
+import jwt
+import datetime
 
 user_bp = Blueprint("user", __name__)
 
@@ -32,13 +35,28 @@ def login():
 
     user = verify_user(email, password)
     if user:
+        # JWT 생성
+        payload = {
+            "user_uuid": str(user.user_uuid),
+            "email": user.email,
+            "exp": datetime.datetime.utcnow()
+            + datetime.timedelta(seconds=JWT_EXPIRATION),
+        }
+        token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+        if isinstance(token, bytes):  # ✅ 필수: bytes → str
+            token = token.decode("utf-8")
+
         return (
             jsonify(
                 {
                     "message": "로그인 성공",
-                    "email": email,
-                    "password": password,
-                    "nickname": user.nickname,
+                    "token": token,
+                    "user": {
+                        "uuid": str(user.user_uuid),
+                        "email": email,
+                        "password": password,
+                        "nickname": user.nickname,
+                    },
                 }
             ),
             200,
