@@ -9,10 +9,10 @@ interface DetailProps {
 export default function Report({
   detailInfo,
 }: DetailProps) {
-  // 위도/경도 기본값 설정 (예시)
+  // 위도/경도 기본값 설정 (?? 뒤에는 detailInfo에서 받아온 정보가 없을 때 대체할 값을 작성)
   const lat = Number(detailInfo.lat ?? 37.5225);
   const lng = Number(detailInfo.lng ?? 126.9057);
-  const address = detailInfo['주소(지번)'] ?? '서울특별시 영등포구 영등포동 6가 66-11';
+  const address = detailInfo['주소(지번)'] ?? '서울특별시 영등포구 영등포동6가 66-11';
 
   return (
     <div>

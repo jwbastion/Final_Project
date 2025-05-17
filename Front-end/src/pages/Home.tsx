@@ -28,6 +28,7 @@ export default function Home() {
     type: string;
   };
 
+  /* DB 연동 포인트(const userTypes ~ const budgetRecs 전체) */
   const userTypes: string[] = [
     'A형 - 사용자 유형 1',
     'A형 - 사용자 유형 2',

@@ -2,6 +2,7 @@ import DetailModalContent from './DetailModalContent';
 import ReportModalContent from './ReportModalContent';
 import React, { useState } from 'react';
 
+/* DB 연동 포인트(const listings 전체) */
 const listings = [
   {
     address: '영등포구 영등포동6가',

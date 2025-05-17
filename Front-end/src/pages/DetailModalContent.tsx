@@ -10,8 +10,10 @@ type Props = {
 export default function DetailModalContent({ listingId, onClose }: Props) {
   // listingId로 DB에서 상세정보를 fetch하거나, props로 데이터 전달받아 렌더링
   // 예시: const { data, isLoading } = useQuery(['listingDetail', listingId], fetchListingDetail);
+
+  /* DB 연동 포인트(const sampleData 전체) */ 
   const sampleData = {
-    detailInfo: {
+    detailInfo: { // 매물 상세 정보
       '주소(지번)': '서울특별시 영등포구 영등포동6가 66-11',
       '주소(도로명)': '영신로 40길 20',
       '보증금/월세(만원)': '4685/56',
