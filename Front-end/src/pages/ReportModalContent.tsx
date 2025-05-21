@@ -36,11 +36,11 @@ export default function ReportModalContent({ listingId, onClose }: Props) {
     ],
 
     timeline: [
-      { time: '07:30', activity: '기상·출근준비', description: '지하철 5호선 영등포시장역 도보 6분, 강남까지 30분 소요' },
-      { time: '08:30', activity: '출근 이동', description: '도보+지하철 통합 경로 시각화' },
+      { time: '07:30', activity: '기상·출근준비', description: '지하철 5호선 영등포시장역 도보 6분' },
+      { time: '08:30', activity: '출근 이동', description: '강남까지 30분 소요' },
       { time: '12:00', activity: '점심 식사', description: '500m 이내 식당 148곳, 혼밥 가능 카페 70곳' },
       { time: '18:00', activity: '퇴근 후 운동', description: '도보 7분 거리 헬스장 3곳, 공원 2곳' },
-      { time: '20:00', activity: '여가', description: '독립서점/카페거리 밀도 시각화' },
+      { time: '20:00', activity: '여가', description: '도보 10분 거리 카페거리 조성' },
       { time: '22:00', activity: '귀가', description: '도보 10분 생활권 내 편의점 12개, 안전한 귀갓길 밝기 높음' },
     ],
   };
