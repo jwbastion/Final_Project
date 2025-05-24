@@ -5,6 +5,7 @@ import LoginPage from './pages/Login';
 import MainHome from './pages/MainHome';
 import MainPage from './pages/Mainpage';
 import ProfilePage from './pages/Profile';
+import PropertyDetailPage from './pages/PropertyDetailPage'; // 추가
 import SignupPage from './pages/Signup';
 import SurveyPage from './pages/Survey';
 
@@ -15,14 +16,18 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/survey" element={<SurveyPage />} />
-
-        {/* 1) MainPage는 Sidebar 없이 */}
-        <Route path="/main"    element={<MainPage />} >
+        <Route path="/property/:propertyId" element={<PropertyDetailPage />} /> {/* 추가 */}
+        
+        {/* MainPage는 레이아웃 역할을 하며 자식 라우트들을 Outlet으로 렌더링 */}
+        <Route path="/main" element={<MainPage />}>
+          {/* 메인 페이지의 기본 경로 */}
           <Route index element={<MainHome />} />
+          {/* 채팅 페이지 경로 수정 */}
           <Route path="chatbot" element={<Chatbot />} />
-          <Route path="/main/favorites" element={<FavoritesPage />} />
-          <Route path="/main/profile" element={<ProfilePage />} />
-          </Route>
+          {/* 아래 경로들 수정: /main/ 접두사 제거 */}
+          <Route path="favorites" element={<FavoritesPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

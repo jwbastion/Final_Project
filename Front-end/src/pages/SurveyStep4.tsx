@@ -19,9 +19,20 @@ const SurveyStep4: React.FC = () => {
       console.log("📤 보낼 설문 데이터:", { email, preferred_area, latitude, longitude, address, budget, monthly, maintenance_fee });
 
       try {
-        const response = await fetch("http://localhost:5000/api/user/survey", {
+        // 토큰 가져오기
+        const token = localStorage.getItem("token");
+        console.log("🔑 사용할 토큰:", token); // 디버깅 로그
+        
+        // Authorization 헤더 직접 구성
+        const authHeader = `Bearer ${token}`;
+        console.log("🔑 Authorization 헤더:", authHeader); // 디버깅 로그
+        
+        const response = await fetch("http://localhost:5000/api/survey", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": authHeader
+          },
           body: JSON.stringify({
             email,
             preferred_area,
@@ -34,6 +45,8 @@ const SurveyStep4: React.FC = () => {
           })
         });
 
+        console.log("📩 응답 상태:", response.status, response.statusText); // 디버깅 로그
+        
         const result = await response.json();
         if (!response.ok) {
           alert(`설문 저장 실패: ${result.error || "알 수 없는 오류"}`);
@@ -71,4 +84,3 @@ const SurveyStep4: React.FC = () => {
 };
 
 export default SurveyStep4;
-

@@ -1,21 +1,17 @@
 import React, { useRef } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface SectionProps {
   title: string;
   emoji: string;
-  items: string[];
-}
-
-interface OutletContextType {
-  favorites: string[];
+  items: any[]; // React.ReactNode[]에서 any[]로 변경
+  favorites: string[]; // 추가
   setFavorites: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
+const Section: React.FC<SectionProps> = ({ title, emoji, items, favorites, setFavorites }) => {
   const navigate = useNavigate();
   const trackRef = useRef<HTMLDivElement>(null);
-  const { favorites, setFavorites } = useOutletContext<OutletContextType>();
 
   const nickname = localStorage.getItem("nickname") || "사용자";
 
@@ -25,12 +21,6 @@ const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
     const gap = 20;
     const distance = dir === 'right' ? cardWidth + gap : -(cardWidth + gap);
     trackRef.current.scrollBy({ left: distance, behavior: 'smooth' });
-  };
-
-  const toggleFavorite = (item: string) => {
-    setFavorites(prev => 
-      prev.includes(item) ? prev.filter(fav => fav !== item) : [...prev, item]
-    );
   };
 
   const finalTitle = title === "사용자 유형" ? `${nickname}님의 유형` : title;
@@ -51,25 +41,75 @@ const Section: React.FC<SectionProps> = ({ title, emoji, items }) => {
         <div className="mp-carousel-track" ref={trackRef}>
           {items.length > 0 ? (
             <>
-              {items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="mp-card"
-                  style={{ position: 'relative', cursor: title === "사용자 유형" ? 'pointer' : 'default' }}
-                  onClick={() => title === "사용자 유형" && navigate('/main/chatbot')}
-                >
-                  {item}
-                    <div
-                      className="heart-icon"
-                      onClick={(e) => {
-                        e.stopPropagation();  // 카드 클릭 막지 않게
-                        toggleFavorite(item);
-                      }}
-                    >
-                      {favorites.includes(item) ? '❤️' : '🤍'}
-                    </div>
-                </div>
-              ))}
+            {items.map((item, idx) => (
+              <div
+                key={idx}
+                className="mp-card"
+                style={{ position: 'relative', cursor: title === "사용자 유형" ? 'pointer' : 'default' }}
+                onClick={() => {
+                  if (title === "사용자 유형") {
+                    navigate('/main/chatbot');
+                  } else if (typeof item === 'object' && item.data) {
+                    // 매물 상세 페이지로 이동
+                    const propertyId = item.data.property_id || item.data.id || item.id;
+                    if (propertyId) {
+                      navigate(`/property/${propertyId}`);
+                    } else {
+                      console.log('매물 상세 정보:', item.data);
+                    }
+                  }
+                }}
+              >
+                {/* 기존 item 렌더링 + 줄바꿈 처리 추가 */}
+                {typeof item === 'string' ? (
+                  item.split('\n').map((line: string, i: number) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < item.split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))
+                ) : typeof item === 'object' && item?.content ? (
+                  item.content.split('\n').map((line: string, i: number) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < item.content.split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  item
+                )}
+
+                {/* 하트 아이콘 */}
+                {title !== "사용자 유형" && (
+                  <div
+                    className="heart-icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      if (typeof item === 'object' && item?.data && item?.addToFavorites) {
+                        const propertyId = String(item.data.property_id || item.data.id || item.id);
+                        if (propertyId) {
+                          item.addToFavorites(propertyId); // MainHome.tsx의 함수 호출
+                          setFavorites(prev => [...new Set([...prev, propertyId])]); // 즉시 UI 반영
+                        }
+                      }
+                    }}
+                  >
+                    {
+                      favorites.includes(
+                        typeof item === 'object' && item.data
+                          ? item.data.property_id || item.data.id || item.id
+                          : typeof item === 'string'
+                            ? item
+                            : ''
+                      )
+                        ? '❤️'
+                        : '🤍'
+                    }
+                  </div>
+                )}
+              </div>
+            ))} {/* 이 부분이 빠져있었음 */}
 
               {/* 사용자 유형이면 추가로 "다시 설문하러 가기" 카드 */}
               {title === "사용자 유형" && (

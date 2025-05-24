@@ -40,7 +40,7 @@ const SignupPage: React.FC = () => {
     }
     // 회원가입 처리 로직
     try {
-        await axios.post('http://localhost:5000/api/user/signup', { email, nickname, password });
+        await axios.post('http://localhost:5000/api/signup', { email, nickname, password });
         alert('회원가입 성공! 로그인 페이지로 이동합니다.');
         navigate('/');
       } catch (error) {

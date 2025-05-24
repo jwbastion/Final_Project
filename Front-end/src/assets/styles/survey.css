@@ -122,3 +122,37 @@
   background-color: #115293;
   box-shadow: 0 6px 16px rgba(17,82,147,0.5);
 }
+
+/* 설문 결과 통합 카드 스타일 */
+.survey-integrated-card {
+  width: 100%;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.survey-integrated-card h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #1976d2;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  font-weight: 600;
+}
+
+.survey-item {
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.survey-label {
+  font-weight: 600;
+  min-width: 90px;
+  color: #555;
+}
+
+.survey-value {
+  color: #333;
+}

@@ -1,5 +1,5 @@
 {
-  "user_uuid": "0fdf0efc-d0be-4864-bacb-6b042d9c02b9",
+  "user_uuid": "a4cad88c-cbe2-4570-ade2-e4aa3f7c0bbc",
   "lat": 37.6531817,
   "lng": 127.0476987,
   "service": "소요시간",
@@ -7,7 +7,7 @@
   "time_limit": 15,
   "radius": null,
   "rent": 30,
-  "deposit": 30,
+  "deposit": 50,
   "maint": 10,
   "infra_preferences": {
     "traffic_subway": 5,
@@ -20,25 +20,31 @@
     },
     "life_mart": {
       "0": "이마트",
-      "1": "15분"
+      "1": "15"
     },
     "life_convenience": {
-      "0": "15분"
+      "0": "15"
     }
   },
   "property_features": {
-    "floor": "저층",
     "index": 1,
-    "size": "15평",
+    "size": "3",
+    "floor": "저층",
     "heating": "개별난방",
     "parking": "상관없음",
     "elevator": "상관없음",
     "direction": "상관없음"
   },
-  "chat_history": [],
+  "chat_history": [
+    {
+      "user": "네",
+      "bot": "죄송합니다. 응답을 생성하는 중에 오류가 발생했습니다. 다시 시도해주세요.",
+      "timestamp": 1747658319.4253786
+    }
+  ],
   "address": "서울 도봉구",
   "preferred_area": "창동역",
-  "nickname": "pogba",
+  "nickname": "Bruno",
   "setup_complete": true,
   "setup_stage": "complete",
   "current_key": "time_limit",

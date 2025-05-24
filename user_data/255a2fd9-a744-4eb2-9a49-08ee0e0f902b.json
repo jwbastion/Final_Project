@@ -1,0 +1,50 @@
+{
+  "user_uuid": "255a2fd9-a744-4eb2-9a49-08ee0e0f902b",
+  "lat": 37.54088,
+  "lng": 127.06812,
+  "address": "서울 광진구",
+  "preferred_area": "건대입구역",
+  "nickname": "Scott",
+  "setup_complete": true,
+  "rent": 1000,
+  "deposit": 50,
+  "maint": 10,
+  "setup_stage": "complete",
+  "current_key": "time_limit",
+  "service": "소요시간",
+  "movement": "도보",
+  "time_limit": 15,
+  "infra_preferences": {
+    "traffic_subway": 5,
+    "life_mart": 3,
+    "life_convenience_store": 1
+  },
+  "infra_selected": [
+    "traffic_subway",
+    "life_mart",
+    "life_convenience_store"
+  ],
+  "infra_index": 3,
+  "infra_q_index": 0,
+  "infra_details": {
+    "traffic_subway": {
+      "0": "2호선"
+    },
+    "life_mart": {
+      "0": "이마트",
+      "1": "15분"
+    },
+    "life_convenience": {
+      "0": "10분"
+    }
+  },
+  "feature_index": 6,
+  "property_features": {
+    "size": "15평",
+    "floor": "저층",
+    "heating": "개별난방",
+    "parking": "상관없음",
+    "elevator": "상관없음",
+    "direction": "상관없음"
+  }
+}

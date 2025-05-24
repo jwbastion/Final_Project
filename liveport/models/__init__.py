@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from liveport.models.user_model import db
+from liveport.models.user_model import db, Users
 from liveport.routes.user_route import user_bp
 from liveport.config import Config
 

@@ -1,5 +1,5 @@
 {
-  "user_uuid": "c0023e33-a7b3-4be0-8ffc-fb3b3755a10b",
+  "user_uuid": "d42fdf20-2242-48b2-bcea-9e90178dea30",
   "lat": 37.6531817,
   "lng": 127.0476987,
   "service": "소요시간",
@@ -22,7 +22,7 @@
   "chat_history": [],
   "address": "서울 도봉구",
   "preferred_area": "창동역",
-  "nickname": "james",
+  "nickname": "Vidic",
   "setup_complete": true,
   "setup_stage": "features",
   "current_key": "time_limit"

@@ -119,4 +119,123 @@
     margin-bottom: 4px;
     color: #666;
   }
-  
+
+.error-banner {
+  background-color: #fee;
+  color: #e33;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 16px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.error-banner p {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+
+.error-banner button {
+  background-color: #e33;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.error-banner button:hover {
+  background-color: #c22;
+}
+
+.error-banner {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-banner p {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.error-banner button {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin: 0 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.error-banner button:hover {
+  background-color: #b71c1c;
+}
+
+
+.chatbot-reset {
+  text-align: right;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.chatbot-reset button {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.chatbot-reset button:hover {
+  background-color: #e0e0e0;
+}
+
+.chatbot-reset button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 15px;
+}
+
+.typing-indicator .dot {
+  width: 6px;
+  height: 6px;
+  margin: 0 2px;
+  background-color: #333;
+  border-radius: 50%;
+  animation: typingAnimation 1s infinite;
+}
+
+.typing-indicator .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingAnimation {
+  0% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(1); }
+}

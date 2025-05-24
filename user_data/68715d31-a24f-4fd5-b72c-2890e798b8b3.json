@@ -1,0 +1,49 @@
+{
+  "user_uuid": "68715d31-a24f-4fd5-b72c-2890e798b8b3",
+  "lat": 37.6557733,
+  "lng": 127.0427702342696,
+  "address": "서울 도봉구",
+  "preferred_area": "북한산한신",
+  "nickname": "abcd",
+  "setup_complete": true,
+  "rent": 0,
+  "deposit": 100,
+  "maint": 15,
+  "setup_stage": "complete",
+  "current_key": "radius",
+  "service": "반경",
+  "radius": 2,
+  "infra_preferences": {
+    "traffic_subway": 5,
+    "traffic_bus": 3,
+    "life_community_center": 1
+  },
+  "infra_selected": [
+    "traffic_subway",
+    "traffic_bus",
+    "life_community_center"
+  ],
+  "infra_index": 3,
+  "infra_q_index": 0,
+  "infra_details": {
+    "traffic_subway": {
+      "0": "4호선"
+    },
+    "traffic_bus": {
+      "0": "1개",
+      "1": "5분"
+    },
+    "life_community": {
+      "0": "10분"
+    }
+  },
+  "feature_index": 6,
+  "property_features": {
+    "size": "10평",
+    "floor": "없어",
+    "heating": "없어",
+    "parking": "안중요해",
+    "elevator": "중요해",
+    "direction": "없어"
+  }
+}
